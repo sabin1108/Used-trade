@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한경대 중고장터 로그인</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background-color: #e0f2fe; /* bg-blue-50 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      width: 100%;
+      max-width: 405px; /* 흰색 배경을 5픽셀 넓힘 */
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding-top: 10px; /* 상단 패딩 줄임 */
+    }
+    .card-header {
+      padding: 16px;
+      text-align: center;
+    }
+    .card-title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .card-content {
+      padding: 16px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      font-size: 14px;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .form-input {
+      width: 90%;
+      padding: 10px; /* 패딩 줄임 */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 1px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    .card-footer {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .button {
+      width: 90%;
+      padding: 12px;
+      background-color: #1d4ed8; /* Blue-600 */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .link {
+      margin-top: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .link a {
+      color: #1d4ed8; /* Blue-600 */
+      text-decoration: none;
+    }
+    .link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <script>
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById("password");
+      const toggleButton = document.getElementById("togglePassword");
+      const isPassword = passwordInput.type === "password";
+      passwordInput.type = isPassword ? "text" : "password";
+      toggleButton.innerHTML = isPassword ? "🙈" : "🔧";
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 폼 기본 제출 동작 방지
+
+        const user_id = document.getElementById('user_id').value; // 아이디 입력 필드
+        const password = document.getElementById('password').value;
+
+        // 서버로 로그인 요청 전송
+        fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id, password })
+        })
+        .then(response => {
+          // 응답 상태에 따라 처리
+          if (!response.ok) {
+            return response.json().then(data => {
+              throw new Error(data.error); // 오류 메시지를 던짐
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            alert(data.message); // 로그인 성공 메시지
+            window.location.href = '/'; // 로그인 후 리다이렉트
+          }
+        })
+        .catch(error => {
+          // 오류 발생 시 메시지 출력
+          alert('오류 발생: ' + error.message);
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">한경대 중고장터 로그인</div>
+    </div>
+    <div class="card-content">
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="user_id" class="form-label">아이디</label>
+          <input id="user_id" type="text" class="form-input" placeholder="아이디를 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="password" class="form-label">비밀번호</label>
+          <div style="position: relative;">
+            <input id="password" type="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+            <button type="button" id="togglePassword" class="toggle-password" onclick="togglePasswordVisibility()">
+              🔧
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="button">로그인</button>
+      </form>
+    </div>
+    <div class="card-footer">
+      <div class="link">
+        계정이 없으신가요? <a href="/signup.html">회원가입</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

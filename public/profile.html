@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>개인 정보 확인</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>중고 책 거래</h1>
+    <nav>
+      <button onclick="location.href='home.html'">홈</button>
+      <button onclick="location.href='transactions.html'">거래내역</button>
+    </nav>
+    <div id="user-info">
+      <span id="username"></span>님 (<span id="student_num"></span>)
+      <button id="logout-btn">로그아웃</button>
+    </div>
+  </header>
+  <main>
+    <h2>개인 정보 확인</h2>
+    <p><strong>이름:</strong> <span id="username"></span></p>
+    <p><strong>아이디:</strong> <span id="user_id"></span></p>
+    <p><strong>학번:</strong> <span id="student_num"></span></p>
+    <p><strong>이메일:</strong> <span id="email"></span></p>
+    <p><strong>가입일:</strong> <span id="created_at"></span></p>
+    
+    <button onclick="location.href='edit-profile.html'">정보 수정</button>
+  </main>
+  <script src="./profile.js"></script>
+</body>
+</html>

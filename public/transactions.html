@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>거래 내역</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>중고 책 거래</h1>
+    <nav>
+      <button onclick="location.href='home.html'">홈</button>
+      <button onclick="location.href='profile.html'">내 정보</button>
+    </nav>
+    <div id="user-info">
+      <span id="username"></span>님 (<span id="student_num"></span>)
+      <button id="logout-btn">로그아웃</button>
+    </div>
+  </header>
+  <main>
+    <h2>구매 내역</h2>
+    <ul id="purchaseList">
+      <li>물품 1 - 구매일: 2023-09-25</li>
+      <li>물품 2 - 구매일: 2023-09-20</li>
+    </ul>
+    <h2>판매 내역</h2>
+    <ul id="saleList">
+      <li>물품 A - 판매일: 2023-09-18</li>
+      <li>물품 B - 판매일: 2023-09-10</li>
+    </ul>
+  </main>
+  <script src="./transactions.js"></script>
+</body>
+</html>

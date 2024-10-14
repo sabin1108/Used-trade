@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시판</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>게시판</h1>
+    <nav>
+      <button onclick="location.href='home.html'">홈</button>
+    </nav>
+  </header>
+  <main>
+    <h2>게시판 작성</h2>
+    <form id="post-form">
+      <label for="title">제목:</label>
+      <input type="text" id="title" required><br><br>
+      <label for="content">내용:</label>
+      <textarea id="content" rows="4" required></textarea><br><br>
+      <button type="submit">작성</button>
+    </form>
+
+    <h2>게시판 목록</h2>
+    <ul id="posts-list">
+      <!-- 게시글 목록이 여기 표시됨 -->
+    </ul>
+  </section>
+  </main>
+  <script src="board.js"></script>
+</body>
+</html>
