@@ -27,9 +27,9 @@ document.getElementById('editForm').addEventListener('submit', function(event) {
     event.preventDefault(); // 폼의 기본 제출 동작 방지
 
     // 폼 데이터를 수집
-    const new_username = document.getElementById('username').value;
+    const new_username = document.querySelector('main #username').value;
     const new_password = document.getElementById('password').value;
-    const new_student_num = document.getElementById('student_num').value;
+    const new_student_num = document.querySelector('main #student_num').value;
     const new_email = document.getElementById('email').value;
 
   
