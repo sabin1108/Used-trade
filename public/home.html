@@ -4,16 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>한경대 중고책 거래</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.20.1/lucide.min.js"></script>
-    <style>
-        button {
-            transition: opacity 0.3s;
-        }
-        button:hover {
-            opacity: 0.8;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body class="min-h-screen bg-gradient-to-b from-blue-100 to-white">
     <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6">
@@ -23,13 +14,12 @@
                 <div class="flex items-center space-x-4">
                     <span class="text-sm" id="user-info" style="display: none;">
                         <span id="username"></span>님 (<span id="student_num"></span>)
-                    </span>
-                    <button class="border border-black text-black px-3 py-1 rounded" id="logout-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4 1.4M15 17V3m0 14l1.4 1.4M15 17h-5m5-14H8m0 0V3m0 0H3"/>
-                        </svg>
-                        로그아웃
-                    </button>
+                        <button class="border border-black text-black px-3 py-1 rounded" id="logout-btn">로그아웃</button>
+                    </span>      
+                        
+                        
+                        
+                    
                 </div>
             </div>
             <nav class="mt-6 flex flex-wrap justify-center gap-4">
@@ -110,31 +100,6 @@
                     document.getElementById('transactions-btn').style.display = 'inline-block';
                     document.getElementById('user-info').style.display = 'inline-block';
                     document.getElementById('logout-btn').style.display = 'inline-block'; // 로그아웃 버튼 표시
-
-                    fetch('/api/users')
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('사용자 목록 불러오기 실패');
-                            }
-                            return response.json();
-                        })
-                        .then(users => {
-                            const userList = document.getElementById('user-list');
-                            userList.innerHTML = '';
-                            users.forEach(user => {
-                                const li = document.createElement('li');
-                                li.textContent = user.username;
-                                li.style.cursor = 'pointer';
-                                li.onclick = function() {
-                                    location.href = `chat.html?username=${encodeURIComponent(user.username)}`;
-                                };
-                                userList.appendChild(li);
-                            });
-                            document.getElementById('user-list-container').style.display = 'block';
-                        })
-                        .catch(error => {
-                            console.error('사용자 목록 불러오기 오류:', error);
-                        });
                 })
                 .catch(error => {
                     console.error('사용자 정보 불러오기 오류:', error);
