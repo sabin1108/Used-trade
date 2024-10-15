@@ -113,7 +113,7 @@ app.get('/api/profile', (req, res) => {
 // 사용자 정보 수정 API
 app.post('/api/update-profile', (req, res) => {
   const userId = req.session.user_id; // 세션에서 사용자 ID 가져오기
-  const { username, password, student_num, email } = req.body;
+  const { new_username, new_password, new_student_num, new_email } = req.body;
 
   const updateQuery = `UPDATE users SET 
                         username = COALESCE(?, username),
@@ -122,7 +122,7 @@ app.post('/api/update-profile', (req, res) => {
                         email = COALESCE(?, email)
                       WHERE id = ?`;
 
-  db.query(updateQuery, [username, password, student_num, email, userId], (err, result) => {
+  db.query(updateQuery, [new_username, new_password, new_student_num, new_email, userId], (err, result) => {
     if (err) {
       console.error('사용자 정보 업데이트 오류:', err);
       return res.status(500).json({ error: '사용자 정보를 업데이트하는 중 오류가 발생했습니다.' });
