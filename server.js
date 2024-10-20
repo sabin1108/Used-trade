@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '1111',
+  password: 'rlawogus!',
   database: 'used_book_db'
 });
 
@@ -113,7 +113,7 @@ app.get('/api/profile', (req, res) => {
 // 사용자 정보 수정 API
 app.post('/api/update-profile', (req, res) => {
   const userId = req.session.user_id; // 세션에서 사용자 ID 가져오기
-  const { new_username, new_password, new_student_num, new_email } = req.body;
+  const { username, password, student_num, email } = req.body;
 
   const updateQuery = `UPDATE users SET 
                         username = COALESCE(?, username),
@@ -122,7 +122,7 @@ app.post('/api/update-profile', (req, res) => {
                         email = COALESCE(?, email)
                       WHERE id = ?`;
 
-  db.query(updateQuery, [new_username, new_password, new_student_num, new_email, userId], (err, result) => {
+  db.query(updateQuery, [username, password, student_num, email, userId], (err, result) => {
     if (err) {
       console.error('사용자 정보 업데이트 오류:', err);
       return res.status(500).json({ error: '사용자 정보를 업데이트하는 중 오류가 발생했습니다.' });
@@ -165,6 +165,33 @@ app.get('/chat/:receiverUsername', (req, res) => {
     });
   });
 });
+function openChatPopup() {
+  // 팝업 요소 생성
+  const popup = document.createElement('div');
+  popup.style.position = 'fixed';
+  popup.style.top = '50%';
+  popup.style.left = '50%';
+  popup.style.transform = 'translate(-50%, -50%)';
+  popup.style.backgroundColor = 'white';
+  popup.style.border = '1px solid black';
+  popup.style.padding = '20px';
+  popup.style.zIndex = '1000';
+
+  // 팝업 내용 설정
+  popup.innerHTML = `
+    <h2>채팅</h2>
+    <p>여기에 채팅 내용을 작성하세요.</p>
+    <button onclick="closeChatPopup(popup)">닫기</button>
+  `;
+
+  // 팝업 추가
+  document.body.appendChild(popup);
+}
+
+// 팝업 닫기 함수
+function closeChatPopup(popup) {
+  document.body.removeChild(popup);
+}
 
 // 채팅 메시지 전송 API
 app.post('/chat', (req, res) => {
@@ -226,15 +253,15 @@ app.get('/users', (req, res) => {
 
 // 게시글 작성 API
 app.post('/create-post', (req, res) => {
-  const { title, content } = req.body;
+  const { title, bookTitle, author, publisher, courseName, price, content } = req.body;
   const userId = req.session.user_id;
 
   if (!userId) {
     return res.status(401).json({ error: '로그인이 필요합니다.' });
   }
 
-  const query = 'INSERT INTO boards (user_id, title, content, created_at) VALUES (?, ?, ?, NOW())';
-  db.query(query, [userId, title, content], (err) => {
+  const query = 'INSERT INTO boards (user_id, title, book_title, author, publisher, course_name, price, content, created_at) VALUES (?, ?, ?, NOW())';
+  db.query(query, [userId, title, bookTitle, author, publisher, courseName, price, content], (err) => {
     if (err) {
       console.error('게시글 작성 오류:', err);
       return res.status(500).json({ error: '게시글 작성 중 오류가 발생했습니다.' });
@@ -297,7 +324,7 @@ app.get('/get-posts', (req, res) => {
   const userId = req.session.user_id;
 
   const query = `
-    SELECT boards.id, boards.title, boards.content, boards.created_at, users.username AS author,
+    SELECT boards.id, boards.title, boards.book_title, boards.author, boards.publisher, boards.course_name, boards.price, boards.content, boards.created_at, users.username AS author,
     CASE WHEN boards.user_id = ? THEN true ELSE false END AS isAuthor
     FROM boards
     JOIN users ON boards.user_id = users.id
