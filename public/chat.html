@@ -102,7 +102,7 @@
             const response = await fetch('/users');
             const users = await response.json();
             const usersUl = document.getElementById('usersUl');
-            usersUl.innerHTML = '';  // 기존 목록 초기화
+            usersUl.innerText = '';  // 기존 목록 초기화
 
             users.forEach(user => {
                 const li = document.createElement('li');
@@ -140,7 +140,7 @@
             const response = await fetch(`/chat/${currentReceiver}`);
             const messages = await response.json();
             const chatBox = document.getElementById('chatBox');
-            chatBox.innerHTML = '';  // 기존 메시지 초기화
+            chatBox.innerText = '';  // 기존 메시지 초기화
 
             messages.forEach(msg => {
                 const div = document.createElement('div');
