@@ -48,7 +48,6 @@
         <nav class="space-x-4">
           <span id="user-id" class="text-white font-semibold" style="display: none;"></span> <!-- 사용자 아이디를 표시할 요소 추가 -->
           <button id="logout-btn" class="button-ghost">로그아웃</button>
-          <button id="signup-btn" class="button-ghost">회원가입</button>
           <button id="user-info" class="button-ghost" style="display:none;">👤 사용자 정보</button>
           <button id="transactions-btn" class="button-ghost" style="display:none;">💼 거래내역</button>
           <button class="button-ghost">🔔</button>
@@ -93,37 +92,17 @@
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">실시간 채팅</h2>
-          <div class="card">
-            <div class="space-y-4 p-4">
-              <div class="flex items-center space-x-4">
-                <div class="avatar">김</div>
-                <div>
-                  <p class="font-semibold">김철수</p>
-                  <p class="text-sm text-gray-500">최근 메시지...</p>
-                </div>
+            <h2 class="text-xl font-semibold mb-4">실시간 채팅</h2>
+            <div class="card">
+              <div id="chat-user-list" class="space-y-4 p-4">
+                <!-- 사용자 목록이 여기에 추가됩니다 -->
               </div>
-              <div class="flex items-center space-x-4">
-                <div class="avatar">이</div>
-                <div>
-                  <p class="font-semibold">이영희</p>
-                  <p class="text-sm text-gray-500">최근 메시지...</p>
-                </div>
-              </div>
-              <div class="flex items-center space-x-4">
-                <div class="avatar">박</div>
-                <div>
-                  <p class="font-semibold">박민수</p>
-                  <p class="text-sm text-gray-500">최근 메시지...</p>
-                </div>
+              <div class="flex items-center p-4">
+                <input type="text" class="input mr-2" placeholder="메시지 입력...">
+                <button class="button">전송</button>
               </div>
             </div>
-            <div class="flex items-center p-4">
-              <input type="text" class="input mr-2" placeholder="메시지 입력...">
-              <button class="button"> 전송 </button>
-            </div>
-          </div>
-        </section>
+          </section>
       </div>
       <ul id="user-list" class="mt-4"></ul>
     </main>
