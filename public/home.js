@@ -28,43 +28,59 @@ window.onload = function() {
   fetch('/api/profile')
     .then(response => {
       if (!response.ok) {
-        // 로그인이 되어 있지 않으면 로그인 페이지로 이동
         window.location.href = '/login.html';
         return;
       }
       return response.json();
     })
     .then(data => {
-      // 사용자 정보를 표시
-      document.getElementById('user-id').innerText = data.username; // 사용자 아이디 표시
-      document.getElementById('user-id').style.display = 'inline'; // 사용자 아이디 보이게 설정
-      document.getElementById('signup-btn').style.display = 'none';
-      document.getElementById('user-info').style.display = 'inline-block';
-      document.getElementById('transactions-btn').style.display = 'inline-block';
-    })
-    .catch(error => console.error('사용자 정보 불러오기 중 오류:', error));
+      document.getElementById('user-id').innerText = data.username;
+      document.getElementById('user-id').style.display = 'inline';
 
-  // 사용자 목록 요청
-  fetch('/api/users')
-    .then(response => response.json())
+      return fetch('/api/users');
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('사용자 목록을 불러오는 데 실패했습니다.');
+      }
+      return response.json();
+    })
     .then(users => {
-      const userList = document.getElementById('user-list');
-      userList.innerHTML = '';
+      const chatUserList = document.getElementById('chat-user-list');
+      chatUserList.innerHTML = '';
+
+      const currentUserId = document.getElementById('user-id').innerText;
+
       users.forEach(user => {
-        const li = document.createElement('li');
-        li.innerText = user.username; // 사용자 이름을 리스트에 추가
-        userList.appendChild(li);
+        if (user.username !== currentUserId) {
+          const userDiv = document.createElement('div');
+          userDiv.className = 'flex items-center space-x-4';
+
+          const avatarDiv = document.createElement('div');
+          avatarDiv.className = 'avatar';
+          avatarDiv.innerText = user.username.charAt(0);
+
+          const nameDiv = document.createElement('div');
+          nameDiv.innerHTML = `<p class="font-semibold">${user.username}</p><p class="text-sm text-gray-500">최근 메시지...</p>`;
+          nameDiv.style.cursor = 'pointer'; // 클릭 가능하게 설정
+
+          // 사용자 이름 클릭 시 채팅 페이지로 이동
+          nameDiv.addEventListener('click', function() {
+            window.location.href = `chat.html?username=${user.username}`;
+          });
+
+          userDiv.appendChild(avatarDiv);
+          userDiv.appendChild(nameDiv);
+          chatUserList.appendChild(userDiv);
+        }
       });
     })
     .catch(error => console.error('사용자 목록 불러오기 중 오류:', error));
 };
 
 
-// 채팅 버튼 클릭 시 채팅 창 열기
-const chatButtons = document.querySelectorAll('.button-outline');
-chatButtons.forEach(button => {
-  button.addEventListener('click', function() {
-    // 1대1 채팅 인터페이스로 이동
-    window.location.href = 'chat.html'; // 채팅 페이지로 이동
-  });
-});
+// 채팅 시작 함수
+function startChat(username) {
+  // 1대1 채팅 인터페이스로 이동, username을 쿼리 파라미터로 전달
+  window.location.href = `chat.html?user=${encodeURIComponent(username)}`;
+}
