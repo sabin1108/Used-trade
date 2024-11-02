@@ -165,6 +165,38 @@ app.get('/chat/:receiverUsername', (req, res) => {
     });
   });
 });
+// 사용자 목록 API home에서 유저 순서대로 나오게 하는거
+app.get('/api/users', (req, res) => {
+  const senderId = req.session.user_id;
+
+  if (!senderId) {
+    return res.status(401).send('로그인이 필요합니다.');
+  }
+
+  db.query('SELECT id, username FROM users WHERE id != ?', [senderId], (err, results) => {
+    if (err) {
+      return res.status(500).send('사용자 목록을 가져오는 중 오류가 발생했습니다.');
+    }
+    res.json(results);
+  });
+});
+// 사용자 목록 API
+app.get('/users', (req, res) => {
+  const senderId = req.session.user_id;
+
+  if (!senderId) {
+    return res.status(401).send('로그인이 필요합니다.');
+  }
+
+  db.query('SELECT id, username FROM users WHERE id != ?', [senderId], (err, results) => {
+    if (err) {
+      return res.status(500).send('사용자 목록을 가져오는 중 오류가 발생했습니다.');
+    }
+    res.json(results);
+  });
+});
+
+
 
 // 채팅 메시지 전송 API
 app.post('/chat', (req, res) => {
@@ -208,21 +240,7 @@ app.post('/chat', (req, res) => {
   });
 });
 
-// 사용자 목록 API
-app.get('/users', (req, res) => {
-  const senderId = req.session.user_id;
 
-  if (!senderId) {
-    return res.status(401).send('로그인이 필요합니다.');
-  }
-
-  db.query('SELECT id, username FROM users WHERE id != ?', [senderId], (err, results) => {
-    if (err) {
-      return res.status(500).send('사용자 목록을 가져오는 중 오류가 발생했습니다.');
-    }
-    res.json(results);
-  });
-});
 
 // 게시글 작성 API
 app.post('/create-post', (req, res) => {
