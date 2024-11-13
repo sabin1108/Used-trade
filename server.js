@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '1111',
+  password: 'rlawogus!',
   database: 'used_book_db'
 });
 
@@ -113,7 +113,7 @@ app.get('/api/profile', (req, res) => {
 // 사용자 정보 수정 API
 app.post('/api/update-profile', (req, res) => {
   const userId = req.session.user_id; // 세션에서 사용자 ID 가져오기
-  const { new_username, new_password, new_student_num, new_email } = req.body;
+  const { username, password, student_num, email } = req.body;
 
   const updateQuery = `UPDATE users SET 
                         username = COALESCE(?, username),
@@ -122,7 +122,7 @@ app.post('/api/update-profile', (req, res) => {
                         email = COALESCE(?, email)
                       WHERE id = ?`;
 
-  db.query(updateQuery, [new_username, new_password, new_student_num, new_email, userId], (err, result) => {
+  db.query(updateQuery, [username, password, student_num, email, userId], (err, result) => {
     if (err) {
       console.error('사용자 정보 업데이트 오류:', err);
       return res.status(500).json({ error: '사용자 정보를 업데이트하는 중 오류가 발생했습니다.' });
@@ -165,38 +165,33 @@ app.get('/chat/:receiverUsername', (req, res) => {
     });
   });
 });
-// 사용자 목록 API home에서 유저 순서대로 나오게 하는거
-app.get('/api/users', (req, res) => {
-  const senderId = req.session.user_id;
+function openChatPopup() {
+  // 팝업 요소 생성
+  const popup = document.createElement('div');
+  popup.style.position = 'fixed';
+  popup.style.top = '50%';
+  popup.style.left = '50%';
+  popup.style.transform = 'translate(-50%, -50%)';
+  popup.style.backgroundColor = 'white';
+  popup.style.border = '1px solid black';
+  popup.style.padding = '20px';
+  popup.style.zIndex = '1000';
 
-  if (!senderId) {
-    return res.status(401).send('로그인이 필요합니다.');
-  }
+  // 팝업 내용 설정
+  popup.innerHTML = `
+    <h2>채팅</h2>
+    <p>여기에 채팅 내용을 작성하세요.</p>
+    <button onclick="closeChatPopup(popup)">닫기</button>
+  `;
 
-  db.query('SELECT id, username FROM users WHERE id != ?', [senderId], (err, results) => {
-    if (err) {
-      return res.status(500).send('사용자 목록을 가져오는 중 오류가 발생했습니다.');
-    }
-    res.json(results);
-  });
-});
-// 사용자 목록 API
-app.get('/users', (req, res) => {
-  const senderId = req.session.user_id;
+  // 팝업 추가
+  document.body.appendChild(popup);
+}
 
-  if (!senderId) {
-    return res.status(401).send('로그인이 필요합니다.');
-  }
-
-  db.query('SELECT id, username FROM users WHERE id != ?', [senderId], (err, results) => {
-    if (err) {
-      return res.status(500).send('사용자 목록을 가져오는 중 오류가 발생했습니다.');
-    }
-    res.json(results);
-  });
-});
-
-
+// 팝업 닫기 함수
+function closeChatPopup(popup) {
+  document.body.removeChild(popup);
+}
 
 // 채팅 메시지 전송 API
 app.post('/chat', (req, res) => {
@@ -240,31 +235,49 @@ app.post('/chat', (req, res) => {
   });
 });
 
+// 사용자 목록 API
+app.get('/users', (req, res) => {
+  const senderId = req.session.user_id;
 
+  if (!senderId) {
+    return res.status(401).send('로그인이 필요합니다.');
+  }
+
+  db.query('SELECT id, username FROM users WHERE id != ?', [senderId], (err, results) => {
+    if (err) {
+      return res.status(500).send('사용자 목록을 가져오는 중 오류가 발생했습니다.');
+    }
+    res.json(results);
+  });
+});
 
 // 게시글 작성 API
 app.post('/create-post', (req, res) => {
-  const { title, content } = req.body;
-  const userId = req.session.user_id;
+  const { title, bookTitle, author, publisher, courseName, price, content } = req.body;
+  const userId = req.session.user_id; // 로그인한 사용자 ID
 
   if (!userId) {
-    return res.status(401).json({ error: '로그인이 필요합니다.' });
+      return res.status(401).json({ error: '로그인이 필요합니다.' });
   }
 
-  const query = 'INSERT INTO boards (user_id, title, content, created_at) VALUES (?, ?, ?, NOW())';
-  db.query(query, [userId, title, content], (err) => {
-    if (err) {
-      console.error('게시글 작성 오류:', err);
-      return res.status(500).json({ error: '게시글 작성 중 오류가 발생했습니다.' });
-    }
-    res.status(200).json({ success: true });
+  const query = `INSERT INTO boards (user_id, title, book_title, author, publisher, course_name, price, content, created_at) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
+  
+  db.query(query, [userId, title, bookTitle, author, publisher, courseName, price, content], (err, result) => {
+      if (err) {
+          console.error('게시글 작성 오류:', err);
+          return res.status(500).json({ error: '게시글 작성 중 오류가 발생했습니다.' });
+      }
+      res.status(201).json({ success: true, message: '게시글이 작성되었습니다.' });
   });
 });
+
+
 
 // 게시글 삭제 API
 app.delete('/api/delete-post/:postId', (req, res) => {
   const postId = req.params.postId;
-  const userId = req.session.user_id;
+  const userId = req.session.user_id; // 현재 로그인한 사용자의 ID
 
   if (!userId) {
     return res.status(401).json({ error: '로그인이 필요합니다.' });
@@ -285,18 +298,29 @@ app.delete('/api/delete-post/:postId', (req, res) => {
   });
 });
 
+
 // 게시글 수정 API
 app.put('/api/update-post/:postId', (req, res) => {
   const postId = req.params.postId;
   const userId = req.session.user_id;
-  const { title, content } = req.body;
+  const { title, bookTitle, author, publisher, courseName, price, content } = req.body;
 
   if (!userId) {
     return res.status(401).json({ error: '로그인이 필요합니다.' });
   }
 
-  const query = 'UPDATE boards SET title = ?, content = ?, updated_at = NOW() WHERE id = ? AND user_id = ?';
-  db.query(query, [title, content, postId, userId], (err, result) => {
+  const query = `UPDATE boards SET 
+                   title = ?, 
+                   book_title = ?, 
+                   author = ?, 
+                   publisher = ?, 
+                   course_name = ?, 
+                   price = ?, 
+                   content = ?, 
+                   updated_at = NOW() 
+                 WHERE id = ? AND user_id = ?`;
+
+  db.query(query, [title, bookTitle, author, publisher, courseName, price, content, postId, userId], (err, result) => {
     if (err) {
       console.error('게시글 수정 오류:', err);
       return res.status(500).json({ error: '게시글 수정 중 오류가 발생했습니다.' });
@@ -310,13 +334,16 @@ app.put('/api/update-post/:postId', (req, res) => {
   });
 });
 
+
 // 게시글 목록 가져오기 API
 app.get('/get-posts', (req, res) => {
   const userId = req.session.user_id;
 
   const query = `
-    SELECT boards.id, boards.title, boards.content, boards.created_at, users.username AS author,
-    CASE WHEN boards.user_id = ? THEN true ELSE false END AS isAuthor
+    SELECT boards.id, boards.title, boards.book_title, boards.author, boards.publisher, 
+           boards.course_name, boards.price, boards.content, boards.created_at, 
+           boards.is_sold, users.username AS author,
+           CASE WHEN boards.user_id = ? THEN true ELSE false END AS isAuthor
     FROM boards
     JOIN users ON boards.user_id = users.id
     ORDER BY boards.created_at DESC
@@ -330,6 +357,32 @@ app.get('/get-posts', (req, res) => {
     res.json(results);
   });
 });
+
+// 게시글 판매 완료 상태 업데이트 API
+app.put('/api/mark-as-sold/:postId', (req, res) => {
+  const postId = req.params.postId;
+  const userId = req.session.user_id; // 현재 로그인한 사용자의 ID
+
+  if (!userId) {
+    return res.status(401).json({ error: '로그인이 필요합니다.' });
+  }
+
+  const query = 'UPDATE boards SET is_sold = TRUE WHERE id = ? AND user_id = ?';
+  db.query(query, [postId, userId], (err, result) => {
+    if (err) {
+      console.error('게시글 판매 완료 업데이트 오류:', err);
+      return res.status(500).json({ error: '판매 완료 업데이트 중 오류가 발생했습니다.' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(403).json({ error: '업데이트할 권한이 없습니다.' });
+    }
+
+    res.status(200).json({ success: true });
+  });
+});
+
+
 
 
 // 서버 실행
