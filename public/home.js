@@ -78,9 +78,43 @@ window.onload = function() {
     .catch(error => console.error('사용자 목록 불러오기 중 오류:', error));
 };
 
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('/api/boards') // boards 테이블에서 게시글 가져오기
+    .then(response => response.json())
+    .then(boards => {
+      const postContainer = document.querySelector('.space-y-4');
+      postContainer.innerHTML = ''; // 기존 내용 초기화
+
+      boards.forEach(board => {
+        const postCard = document.createElement('div');
+        postCard.classList.add('card');
+        postCard.innerHTML = `
+          <h3 class="font-semibold text-lg">${board.title}</h3>
+          <p class="font-bold">${board.price.toLocaleString()}원</p>
+          <p class="text-gray-500">판매자: ${board.course_name}</p>
+          <div class="flex justify-between mt-4">
+            <button class="button-outline chat-button" data-author-username="${board.course_name}">💬 채팅하기</button>
+            <button class="button">자세히 보기</button>
+          </div>
+        `;
+        postContainer.appendChild(postCard);
+      });
+
+      const chatButtons = document.querySelectorAll(".chat-button");
+      chatButtons.forEach(button => {
+        button.addEventListener("click", (event) => {
+          const authorUsername = event.target.getAttribute("data-author-username");
+
+          // 채팅 페이지로 이동, 작성자 username을 쿼리 매개변수로 전달
+          window.location.href = `chat.html?username=${encodeURIComponent(username)}`;
+        });
+      });
+    })
+    .catch(error => console.error('게시글을 불러오는 중 오류 발생:', error));
+});
 
 // 채팅 시작 함수
 function startChat(username) {
   // 1대1 채팅 인터페이스로 이동, username을 쿼리 파라미터로 전달
-  window.location.href = `chat.html?user=${encodeURIComponent(username)}`;
+  window.location.href = `chat.html?username=${encodeURIComponent(username)}`;
 }
