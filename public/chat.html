@@ -1,191 +1,170 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1대1 채팅</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        #userList, #chatSection {
-            margin: 50px auto;
-            width: 300px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        #chatBox {
-            border: 1px solid #ccc;
-            height: 300px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #e9e9e9;
-        }
-        #chatBox div {
-            padding: 5px;
-        }
-        #chatBox .sender {
-            text-align: right;
-            color: #00999A; /* 보낸 사람 색 */
-        }
-        #chatBox .receiver {
-            text-align: left;
-            color: #000; /* 받는 사람 색 */
-        }
-        button {
-            background-color: #00999A;
-            color: white;
-            padding: 7px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #007d7d;
-        }
-        .message-count {
-            background-color: red;
-            color: white;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한경대 중고장터 채팅</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css">
 </head>
-<body>
-    <!-- 사용자 목록 -->
-    <div id="userList">
-        <h2>채팅 상대 선택</h2>
-        <ul id="usersUl"></ul>
+<body class="min-h-screen bg-blue-50">
+
+  <header class="bg-blue-600 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">한경대 중고장터</h1>
+      <nav class="space-x-4">
+        <button onclick="window.location.href='home.html'" class="bg-transparent text-white px-2 py-1">홈</button>
+        <button onclick="window.location.href='profile.html'" class="bg-transparent text-white px-2 py-1">사용자 정보</button>
+        <button onclick="window.location.href='transactions.html'" class="bg-transparent text-white px-2 py-1">거래내역</button>
+        <button class="bg-transparent text-white px-2 py-1">알림</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto mt-8">
+    <div id="userList" class="max-w-2xl mx-auto bg-white rounded-lg shadow">
+      <div class="bg-blue-100 p-4">
+        <h2 class="text-xl font-bold">채팅 상대 선택</h2>
+      </div>
+      <div class="p-4">
+        <ul id="usersUl" class="space-y-2"></ul>
+      </div>
     </div>
 
-    <!-- 채팅 섹션 -->
-    <div id="chatSection" style="display: none;">
-        <h2 id="chatTitle"></h2>
-        <div id="chatBox"></div>
-        <form id="chatForm">
-            <input type="text" id="message" placeholder="메시지 입력" required>
-            <button type="submit">보내기</button>
-        </form>
-        <button onclick="goBackToUserList()">사용자 목록으로 돌아가기</button>
+    <div id="chatSection" class="max-w-2xl mx-auto bg-white rounded-lg shadow" style="display: none;">
+      <div class="bg-blue-100 p-4">
+        <h2 id="chatTitle" class="text-xl font-bold">채팅</h2>
+      </div>
+      
+      <!-- 채팅 메시지 박스 -->
+      <div id="chatBox" class="h-[400px] overflow-y-auto p-4 space-y-4 bg-gray-50"></div>
+
+      <!-- 채팅 입력창 -->
+      <form id="chatForm" class="p-4 bg-gray-100 flex items-center border-t">
+        <input id="message" type="text" placeholder="메시지를 입력하세요..." class="flex-grow mr-2 p-2 border rounded" required>
+        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">보내기</button>
+      </form>
+
+      <div class="p-4">
+        <button onclick="goBackToUserList()" class="px-4 py-2 bg-gray-200 rounded">사용자 목록으로 돌아가기</button>
+      </div>
     </div>
+  </main>
 
-    <script>
-        let userId;  // 로그인한 사용자 ID를 설정해야 합니다.
-        let currentReceiver;
-        const unreadMessageCounts = {}; // 메시지 수를 저장할 객체
+  <script>
+    let userId = "current_user_id";  // 로그인한 사용자 ID 설정
+    let currentReceiver = null;
+    const unreadMessageCounts = {};
 
-        // 페이지 로드 시 사용자 목록 불러오기
-        window.onload = async () => {
-            await loadUsers();
-            const urlParams = new URLSearchParams(window.location.search);
-            const initialReceiver = urlParams.get('username');
+    // 페이지 로드 시 사용자 목록 불러오기
+    window.onload = async () => {
+      await loadUsers();
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialReceiver = urlParams.get('username');
+      if (initialReceiver) {
+        startChat(initialReceiver);
+      }
+    };
 
-            // URL에 username이 있으면 바로 채팅 시작
-            if (initialReceiver) {
-                startChat(initialReceiver);
-            }
-        };
+    // 사용자 목록 불러오기
+    async function loadUsers() {
+      const response = await fetch('/users');
+      const users = await response.json();
+      const usersUl = document.getElementById('usersUl');
+      usersUl.innerHTML = '';
+      users.forEach(user => {
+        const li = document.createElement('li');
+        li.classList.add("flex", "items-center", "justify-between", "p-2", "hover:bg-gray-100", "cursor-pointer", "rounded");
+        li.textContent = user.username;
 
-        // 사용자 목록 불러오기
-        async function loadUsers() {
-            const response = await fetch('/users');
-            const users = await response.json();
-            const usersUl = document.getElementById('usersUl');
-            usersUl.innerText = '';  // 기존 목록 초기화
-
-            users.forEach(user => {
-                const li = document.createElement('li');
-                li.textContent = user.username;
-
-                // 메시지 수가 있는 경우 표시
-                const messageCount = unreadMessageCounts[user.username] || 0;
-                if (messageCount > 0) {
-                    const countSpan = document.createElement('span');
-                    countSpan.className = 'message-count';
-                    countSpan.textContent = messageCount;
-                    li.appendChild(countSpan);
-                }
-
-                li.onclick = () => startChat(user.username);
-                usersUl.appendChild(li);
-            });
+        const messageCount = unreadMessageCounts[user.username] || 0;
+        if (messageCount > 0) {
+          const countSpan = document.createElement('span');
+          countSpan.className = 'bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full';
+          countSpan.textContent = messageCount;
+          li.appendChild(countSpan);
         }
 
-        // 선택된 사용자와 채팅 시작
-        function startChat(receiverUsername) {
-            currentReceiver = receiverUsername;
-            document.getElementById('chatTitle').textContent = `채팅 with ${receiverUsername}`;
-            document.getElementById('userList').style.display = 'none';
-            document.getElementById('chatSection').style.display = 'block';
-            loadMessages(); // 메시지 로드
+        li.onclick = () => startChat(user.username);
+        usersUl.appendChild(li);
+      });
+    }
 
-            // 선택된 사용자에 대한 메시지 수 초기화
-            unreadMessageCounts[receiverUsername] = 0;
-            loadUsers(); // 사용자 목록 새로 고침
-        }
+    // 선택된 사용자와 채팅 시작
+    function startChat(receiverUsername) {
+      currentReceiver = receiverUsername;
+      document.getElementById('chatTitle').textContent = `${receiverUsername}님과의 채팅`;
+      document.getElementById('userList').style.display = 'none';
+      document.getElementById('chatSection').style.display = 'block';
+      loadMessages();
+      unreadMessageCounts[receiverUsername] = 0;
+      loadUsers();
+    }
 
-        // 메시지 불러오기
-        async function loadMessages() {
-            const response = await fetch(`/chat/${currentReceiver}`);
-            const messages = await response.json();
-            const chatBox = document.getElementById('chatBox');
-            chatBox.innerText = '';  // 기존 메시지 초기화
+    // 메시지 불러오기
+async function loadMessages() {
+  const response = await fetch(`/chat/${currentReceiver}`);
+  const messages = await response.json();
+  const chatBox = document.getElementById('chatBox');
+  chatBox.innerHTML = '';
 
-            messages.forEach(msg => {
-                const div = document.createElement('div');
-                // 메시지 보낸 사람과 현재 사용자 ID를 비교
-                div.className = msg.sender_id === userId ? 'sender' : 'receiver';
-                div.textContent = `${msg.sender_name}: ${msg.message}`;
+  messages.forEach(msg => {
+    const messageDiv = document.createElement('div');
 
-                // 현재 사용자가 받는 메시지라면 메시 수 증가
-                if (msg.sender_id !== userId) {
-                    unreadMessageCounts[currentReceiver] = (unreadMessageCounts[currentReceiver] || 0) + 1;
-                }
-                chatBox.appendChild(div);
-            });
+    if (msg.sender_id === userId) {
+      // 내가 보낸 메시지 - 오른쪽 정렬, 파란색 배경
+      messageDiv.className = 'flex justify-end mb-2';
+      messageDiv.innerHTML = `
+        <div class="bg-blue-500 text-white max-w-[60%] p-3 rounded-lg rounded-tr-none">
+          <p class="font-semibold text-sm">${msg.sender_name}</p>
+          <p>${msg.message}</p>
+        </div>
+      `;
+    } else {
+      // 상대방이 보낸 메시지 - 왼쪽 정렬, 회색 배경
+      messageDiv.className = 'flex justify-start mb-2';
+      messageDiv.innerHTML = `
+        <div class="bg-gray-200 text-black max-w-[70%] p-3 rounded-lg rounded-tl-none">
+          <p class="font-semibold text-sm">${msg.sender_name}</p>
+          <p>${msg.message}</p>
+        </div>
+      `;
+    }
 
-            chatBox.scrollTop = chatBox.scrollHeight;  // 스크롤을 아래로 이동
+    chatBox.appendChild(messageDiv);
+  });
 
-            // 사용자 목록 새로 고침
-            loadUsers();
-        }
+  // 메시지가 추가된 후 스크롤을 자동으로 가장 아래로 이동
+  setTimeout(() => {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 50);
+}
 
-        // 메시지 전송
-        document.getElementById('chatForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const messageInput = document.getElementById('message');
-            const message = messageInput.value;
+    // 메시지 전송
+    document.getElementById('chatForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const messageInput = document.getElementById('message');
+      const message = messageInput.value;
 
-            const response = await fetch('/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ receiverUsername: currentReceiver, message })
-            });
+      const response = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ receiverUsername: currentReceiver, message })
+      });
 
-            if (response.ok) {
-                messageInput.value = '';  // 입력 필드 초기화
-                loadMessages(); // 메시지 전송 후 메시지 다시 로드
-            } else {
-                alert('메시지 전송 실패');
-            }
-        });
+      if (response.ok) {
+        messageInput.value = '';
+        loadMessages();  // 메시지를 전송한 후 메시지 목록을 다시 로드
+      } else {
+        alert('메시지 전송 실패');
+      }
+    });
 
-        // 사용자 목록으로 돌아가기
-        function goBackToUserList() {
-            document.getElementById('chatSection').style.display = 'none';
-            document.getElementById('userList').style.display = 'block';
-        }
-    </script>
+    // 사용자 목록으로 돌아가기
+    function goBackToUserList() {
+      document.getElementById('chatSection').style.display = 'none';
+      document.getElementById('userList').style.display = 'block';
+    }
+  </script>
+
 </body>
 </html>
