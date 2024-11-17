@@ -4,10 +4,13 @@ const mysql = require('mysql');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
+const { Server } = require('socket.io'); // 웹소켓용 모듈 추가
+const http = require('http');
 
 const app = express();
+const server = http.createServer(app); // HTTP 서버 생성
+const io = require('socket.io')(server);
 const PORT = 3000; // 서버 포트 설정
-
 // 세션 설정
 app.use(session({
   secret: 'secret',  // 임의의 비밀 키
@@ -33,6 +36,7 @@ const db = mysql.createConnection({
   database: 'used_book_db'
 });
 
+
 // 데이터베이스 연결
 db.connect((err) => {
   if (err) {
@@ -42,6 +46,31 @@ db.connect((err) => {
   console.log('MySQL 연결 성공');
 });
 app.set('db', db);
+
+//소켓
+
+// 채팅 메시지 처리
+
+io.on('connection', (socket) => {
+  console.log('새로운 사용자 연결:', socket.id);
+
+  // 메시지 수신 처리
+  socket.on('sendMessage', ({ senderId, receiverUsername, message }) => {
+    console.log(`받은 메시지: ${message} (보낸 사람: ${senderId}, 받는 사람: ${receiverUsername})`);
+
+    // 수신자에게 메시지 전송
+    io.emit('receiveMessage', { senderId, receiverUsername, message });
+  });
+
+  // 연결 종료 시 처리
+  socket.on('disconnect', () => {
+    console.log('사용자 연결 종료');
+  });
+});
+
+
+//소켓부분 끝-------------------------------------------------------------------------------------
+
 
 // 회원가입 API
 app.post('/signup', (req, res) => {
@@ -390,6 +419,6 @@ app.put('/api/mark-as-sold/:postId', (req, res) => {
 
 
 // 서버 실행
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`서버가 ${PORT} 포트에서 실행 중입니다.`);
 });
