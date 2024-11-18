@@ -10,8 +10,7 @@
   <header>
     <h1>게시판 작성</h1>
     <nav>
-      <button onclick="location.href='board.html'">게시판 목록으로 돌아가기</button> <!-- 목록 페이지로 돌아가기 -->
-      
+      <button onclick="location.href='board.html'">게시판 목록으로 돌아가기</button>
     </nav>
     <div id="user-info">
         <span id="username"></span>님 (<span id="student_num"></span>)
@@ -34,7 +33,7 @@
       <input type="text" id="publisher" required><br><br>
 
       <label for="course-name">강의명:</label>
-      <input type="text" id="course-name" ><br><br>
+      <input type="text" id="course-name"><br><br>
 
       <label for="price">가격:</label>
       <input type="text" id="price" required><br><br>
@@ -46,37 +45,6 @@
     </form>
   </main>
 
-  <script src="board.js"></script>
-  <script>
-    document.getElementById('post-form').addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      // 입력된 게시글 정보 가져오기
-      const title = document.getElementById('title').value;
-      const bookTitle = document.getElementById('book-title').value;
-      const author = document.getElementById('author').value;
-      const publisher = document.getElementById('publisher').value;
-      const courseName = document.getElementById('course-name').value;
-      const price = document.getElementById('price').value;
-      const content = document.getElementById('content').value;
-
-      // 게시글 저장 (localStorage 사용)
-      const posts = JSON.parse(localStorage.getItem('posts')) || [];
-      posts.push({ 
-        title, 
-        bookTitle, 
-        author, 
-        publisher, 
-        courseName,
-        price, 
-        content 
-      });
-      localStorage.setItem('posts', JSON.stringify(posts));
-
-      // 저장 후 목록 페이지로 이동
-      alert('게시글이 작성되었습니다.');
-      location.href = 'board.html';
-    });
-  </script>
+  <script src="create-post.js"></script>
 </body>
 </html>
