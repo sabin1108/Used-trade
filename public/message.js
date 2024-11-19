@@ -1,5 +1,5 @@
 // 소켓 연결
-const socket = io('http://localhost:3000');
+const socket = io('ec2-52-79-170-26.ap-northeast-2.compute.amazonaws.com:3000');
 
 // 서버 연결 성공 시 처리
 socket.on('connect', () => {
