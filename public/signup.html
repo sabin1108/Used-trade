@@ -3,30 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>회원가입</title>
+  <title>한경대 중고장터 회원가입</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background-color: #e0f2fe; /* bg-blue-50 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      width: 100%;
+      max-width: 405px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding-top: 10px;
+    }
+    .card-header {
+      padding: 16px;
+      text-align: center;
+    }
+    .card-title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .card-content {
+      padding: 16px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      font-size: 14px;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .form-input {
+      width: 90%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 1px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    .card-footer {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .button {
+      width: 90%;
+      padding: 12px;
+      background-color: #1d4ed8; /* Blue-600 */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .link {
+      margin-top: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .link a {
+      color: #1d4ed8; /* Blue-600 */
+      text-decoration: none;
+    }
+    .link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>중고 책 거래</h1>
-    <nav>
-      <button onclick="location.href='home.html'">홈</button>
-      <button onclick="location.href='login.html'">로그인</button>
-    </nav>
-  </header>
-  <main>
-    <h2>회원가입</h2>
-    <form id="signupForm">
-      <div id="selection" name="essentialSection">
-        <input type="text" id="user_id" placeholder="아이디" required><br><br>
-        <input type="text" id="username" placeholder="이름" required><br><br>
-        <input type="text" id="student_num" placeholder="학번" required><br><br>
-        <input type="email" id="email" placeholder="이메일" required><br><br>
-        <input type="password" id="password" placeholder="비밀번호" required>
-      </div><br><br>
-      <button type="submit">회원가입</button>
-    </form>
-  </main>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">한경대 중고장터 회원가입</div>
+    </div>
+    <div class="card-content">
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="user_id" class="form-label">아이디</label>
+          <input id="user_id" type="text" class="form-input" placeholder="아이디를 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="username" class="form-label">이름</label>
+          <input id="username" type="text" class="form-input" placeholder="이름을 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="student_num" class="form-label">학번</label>
+          <input id="student_num" type="text" class="form-input" placeholder="학번을 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="email" class="form-label">이메일</label>
+          <input id="email" type="email" class="form-input" placeholder="이메일을 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="password" class="form-label">비밀번호</label>
+          <div style="position: relative;">
+            <input id="password" type="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+            <button type="button" id="togglePassword" class="toggle-password">
+              🔧
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="button">회원가입</button>
+      </form>
+    </div>
+    <div class="card-footer">
+      <div class="link">
+        이미 계정이 있으신가요? <a href="/login.html">로그인</a>
+      </div>
+    </div>
+  </div>
   <script src="./signup.js"></script>
 </body>
 </html>
