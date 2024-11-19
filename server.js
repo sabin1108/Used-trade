@@ -160,6 +160,27 @@ app.post('/api/update-profile', (req, res) => {
   });
 });
 
+// 판매내역 가져오기 API
+app.get('/transactions', (req, res) => {
+  const userId = req.session.user_id;
+
+  const query = `
+    SELECT boards.id, boards.book_title, boards.author, boards.publisher, boards.course_name, boards.price, boards.is_sold, boards.created_at,
+    CASE WHEN boards.user_id = ? THEN true ELSE false END AS isAuthor
+    FROM boards
+    JOIN users ON boards.user_id = users.id
+    ORDER BY boards.created_at DESC
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('거래내역 조회 오류:', err);
+      return res.status(500).json({ error: '거래내역 조회 중 오류가 발생했습니다.' });
+    }
+    res.json(results);
+  });
+});
+
 // 채팅 메시지 가져오기 API
 app.get('/chat/:receiverUsername', (req, res) => {
   const senderId = req.session.user_id; // 세션에서 로그인한 사용자 ID 가져오기
