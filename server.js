@@ -50,23 +50,43 @@ app.set('db', db);
 //소켓
 
 // 채팅 메시지 처리
-
+// 기존 서버 코드 수정
 io.on('connection', (socket) => {
   console.log('새로운 사용자 연결:', socket.id);
 
+  const users = {};
+
+  // 사용자 등록 처리
+  socket.on('registerUser', (username) => {
+    users[socket.id] = username; // 소켓 ID와 사용자 이름 매핑
+    console.log(`등록된 사용자: ${username} (소켓 ID: ${socket.id})`);
+  });
+
   // 메시지 수신 처리
-  socket.on('sendMessage', ({ senderId, receiverUsername, message }) => {
+  socket.on('sendMessage', ({ receiverUsername, message }) => {
+    const senderId = users[socket.id]; // 현재 소켓의 사용자 이름 가져오기
+    if (!senderId) {
+      console.error('사용자 이름이 등록되지 않았습니다.');
+      return;
+    }
+
     console.log(`받은 메시지: ${message} (보낸 사람: ${senderId}, 받는 사람: ${receiverUsername})`);
 
-    // 수신자에게 메시지 전송
-    io.emit('receiveMessage', { senderId, receiverUsername, message });
+    // 다른 사용자에게만 메시지 전송
+    socket.broadcast.emit('receiveMessage', { senderId, message });
   });
 
-  // 연결 종료 시 처리
+  // 연결 종료 시 사용자 정보 삭제
   socket.on('disconnect', () => {
-    console.log('사용자 연결 종료');
+    const username = users[socket.id];
+    delete users[socket.id];
+    console.log(`사용자 연결 종료: ${username}`);
   });
 });
+
+
+//이미지 처리
+app.use(express.static(path.join(__dirname, 'image')));
 
 
 //소켓부분 끝-------------------------------------------------------------------------------------
