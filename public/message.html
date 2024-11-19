@@ -6,6 +6,96 @@
   <title>Chat</title>
   <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
   <link rel="stylesheet" href="styless.css">
+  <style>
+    body {
+      background-color: #2d3748; /* 어두운 배경 색 (gray-800) */
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    #chat-header {
+      font-size: 32px;
+      font-weight: bold;
+      color: #81e6d9; /* 밝은 teal 색 */
+      margin-bottom: 20px;
+    }
+
+    #chat-window {
+      width: 100%;
+      max-width: 600px;
+      background-color: #1a202c; /* 어두운 채팅창 배경 */
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      margin-bottom: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    #feedback {
+      color: #e2e8f0; /* 밝은 텍스트 색 */
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    #chat-form {
+      display: flex;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    #message-input {
+      width: 90%;
+      padding: 10px;
+      border: 1px solid #4a5568; /* 어두운 테두리 색 */
+      border-radius: 4px;
+      background-color: #2d3748; /* 어두운 배경 색 */
+      color: white;
+      font-size: 16px;
+    }
+
+    #chat-form button {
+      width: 10%;
+      padding: 10px;
+      background-color: #4fd1c5; /* 밝은 teal 색 */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #chat-form button:hover {
+      background-color: #38b2ac; /* 버튼 hover 색상 */
+    }
+
+    /* 메시지 스타일 */
+    .message {
+      padding: 8px;
+      margin-bottom: 12px;
+      border-radius: 4px;
+      background-color: #4a5568; /* 메시지 배경 색 */
+      max-width: 80%;
+    }
+
+    .message.user {
+      background-color: #4fd1c5; /* 사용자 메시지 배경 색 */
+      color: black;
+      align-self: flex-end;
+    }
+
+    .message.bot {
+      background-color: #2b6cb0; /* 봇 메시지 배경 색 */
+      color: white;
+      align-self: flex-start;
+    }
+  </style>
 </head>
 <body>
   <h1 id="chat-header">채팅</h1>
@@ -22,4 +112,3 @@
   <script src="message.js"></script>
 </body>
 </html>
-
