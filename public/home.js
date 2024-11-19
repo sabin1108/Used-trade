@@ -10,7 +10,30 @@ document.getElementById('logout-btn').addEventListener('click', function() {
   })
   .catch(error => console.error('로그아웃 중 오류:', error));
 });
-
+//상당 아이콘 이동
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("profile-btn").addEventListener("click", () => {
+    window.location.href = "profile.html"; // Profile 페이지로 이동
+  });
+  document.getElementById("board-btn").addEventListener("click", () => {
+    window.location.href = "board.html"; // Board 페이지로 이동
+  });
+  document.getElementById("notification-btn").addEventListener("click", () => {
+    window.location.href = "transactions.html"; // Transactions 페이지로 이동
+  });
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    // 로그아웃 처리 로직
+    fetch('/api/logout', { method: 'POST' })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = "login.html"; // 로그아웃 후 로그인 페이지로 이동
+        } else {
+          console.error("로그아웃 실패");
+        }
+      })
+      .catch(error => console.error("로그아웃 오류:", error));
+  });
+});
 // 새 게시글 작성 버튼 클릭 시 board.html로 이동
 document.addEventListener("DOMContentLoaded", function() {
   const newPostButton = document.getElementById("new-post-button");
@@ -22,8 +45,9 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
+
 // 사용자 목록 가져오기
-window.onload = function() {
+window.onload = function () {
   // 사용자 정보 불러오기
   fetch('/api/profile')
     .then(response => {
@@ -53,19 +77,27 @@ window.onload = function() {
 
       users.forEach(user => {
         if (user.username !== currentUserId) {
+          // 사용자 목록 아이템 생성
           const userDiv = document.createElement('div');
-          userDiv.className = 'flex items-center space-x-4';
+          userDiv.className =
+            'flex items-center space-x-4 p-4 hover:bg-gray-50 rounded-lg transition duration-300 cursor-pointer';
 
+          // 원형 아바타
           const avatarDiv = document.createElement('div');
-          avatarDiv.className = 'avatar';
-          avatarDiv.innerText = user.username.charAt(0);
+          avatarDiv.className =
+            'w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold';
+          avatarDiv.innerText = user.username.charAt(0).toUpperCase();
 
+          // 이름 및 상태 메시지
           const nameDiv = document.createElement('div');
-          nameDiv.innerHTML = `<p class="font-semibold">${user.username}</p><p class="text-sm text-gray-500">최근 메시지...</p>`;
-          nameDiv.style.cursor = 'pointer'; // 클릭 가능하게 설정
+          nameDiv.className = 'flex-1';
+          nameDiv.innerHTML = `
+            <p class="font-semibold text-gray-800">${user.username}</p>
+            <p class="text-sm text-gray-500">최근 메시지...</p>
+          `;
 
           // 사용자 이름 클릭 시 채팅 페이지로 이동
-          nameDiv.addEventListener('click', function() {
+          userDiv.addEventListener('click', function () {
             window.location.href = `message.html?username=${user.username}`;
           });
 
@@ -75,7 +107,9 @@ window.onload = function() {
         }
       });
     })
-    .catch(error => console.error('사용자 목록 불러오기 중 오류:', error));
+    .catch(error =>
+      console.error('사용자 목록 불러오기 중 오류:', error)
+    );
 };
 
 document.addEventListener('DOMContentLoaded', () => {
