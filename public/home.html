@@ -79,24 +79,41 @@
               postItem.className = "bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg";
               postItem.innerHTML = `
                 <img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover">
-                <div class="p-4">
-                  <h3 class="font-semibold text-lg text-gray-800 mb-2">${post.title}</h3>
-                  <p class="font-bold text-blue-600 mb-2">${post.price}원</p>
-                  <p class="text-gray-600 mb-4">판매자: ${post.author}</p>
-                  <div class="flex justify-between">
-                    <button class="bg-white text-blue-600 border border-blue-600 font-semibold py-2 px-4 rounded-full hover:bg-blue-600 hover:text-white transition duration-300 flex items-center">
-                      <svg class="w-4 h-4 mr-2"><use href="#icon-message-circle"></use></svg>
-                      채팅하기
-                    </button>
-                    <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300">자세히 보기</button>
-                  </div>
-                </div>
+            <div class="p-4">
+              <h3 class="font-semibold text-lg text-gray-800 mb-2">${post.title}</h3>
+              <p class="font-bold text-blue-600 mb-2">${post.price}원</p>
+              <p class="text-gray-600 mb-4">판매자: ${post.author}</p>
+              <div class="flex justify-between">
+                <button class="chat-button bg-white text-blue-600 border border-blue-600 font-semibold py-2 px-4 rounded-full hover:bg-blue-600 hover:text-white transition duration-300 flex items-center" data-author="${post.author}">
+                  <svg class="w-4 h-4 mr-2"><use href="#icon-message-circle"></use></svg>
+                  채팅하기
+                </button>
+                <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300">자세히 보기</button>
+              </div>
+            </div>
               `;
               postsList.appendChild(postItem);
             });
-          })
-          .catch(error => console.error("게시글 로드 오류:", error));
-      }
+            // "채팅하기" 버튼 클릭 이벤트 처리
+        postsList.addEventListener("click", (event) => {
+          if (event.target.closest(".chat-button")) {
+            const authorUsername = event.target.closest(".chat-button").dataset.author;
+            startChat(authorUsername); // 채팅 시작
+          }
+        });
+      })
+      .catch((error) => console.error("게시글 로드 오류:", error));
+  }
+
+  // 채팅 시작 함수
+  function startChat(username) {
+    // 1대1 채팅 인터페이스로 이동
+    window.location.href = `message.html?username=${encodeURIComponent(username)}`;
+  }
+
+  
+
+      
       function loadChatList() {
   fetch('/get-chats')
     .then(response => response.json())
