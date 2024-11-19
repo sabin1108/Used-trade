@@ -3,130 +3,172 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>한경대 중고장터</title>
-  <style>
-    /* Tailwind 스타일을 CSS로 구현 */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background-color: #f0f8ff; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
-    .min-h-screen { min-height: 100vh; }
-    .bg-blue-50 { background-color: #f0f8ff; }
-    .bg-blue-600 { background-color: #2563eb; }
-    .text-white { color: white; }
-    .text-gray-500 { color: #6b7280; }
-    .text-xl { font-size: 1.25rem; }
-    .font-bold { font-weight: bold; }
-    .font-semibold { font-weight: 600; }
-    .p-4 { padding: 1rem; }
-    .mt-8 { margin-top: 2rem; }
-    .space-y-4 > * + * { margin-top: 1rem; }
-    .grid { display: grid; gap: 2rem; }
-    .grid-cols-1 { grid-template-columns: 1fr; }
-    .md\:grid-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-    .md\:col-span-2 { grid-column: span 2; }
-    .flex { display: flex; }
-    .justify-between { justify-content: space-between; }
-    .items-center { align-items: center; }
-    .w-full { width: 100%; }
-    .rounded { border-radius: 0.25rem; }
-    .border { border: 1px solid #ddd; }
-    .mb-4 { margin-bottom: 1rem; }
-    .mr-2 { margin-right: 0.5rem; }
-    .card { border: 1px solid #ddd; border-radius: 0.25rem; padding: 1rem; background: white; }
-    .button { padding: 0.5rem 1rem; background-color: #2563eb; color: white; border: none; cursor: pointer; border-radius: 0.25rem; }
-    .button-outline { background: none; color: #2563eb; border: 1px solid #2563eb; }
-    .button-ghost { background: none; color: white; border: none; }
-    .input { padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.25rem; width: calc(100% - 2rem); }
-    .avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #ddd; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-  </style>
+  <title>BookHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="min-h-screen bg-blue-50">
-    <header class="bg-blue-600 text-white p-4">
-      <div class="container flex justify-between items-center">
-        <h1 class="text-2xl font-bold">한경대 중고장터</h1>
-        <nav class="space-x-4">
-          <span id="user-id" class="text-white font-semibold" style="display: none;"></span>
-          <button id="logout-btn" class="button-ghost">로그아웃</button>
-          <button id="user-info" class="button-ghost" style="display:none;">👤 사용자 정보</button>
-          <button id="transactions-btn" class="button-ghost" style="display:none;">💼 거래내역</button>
-          <button class="button-ghost">🔔</button>
-        </nav>
-      </div>
-    </header>
+<body class="min-h-screen bg-gray-100">
+  <!-- Header -->
+  <header class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-gray-800">BookHub</h1>
+      <nav class="flex items-center space-x-4">
+        <span id="user-id" class="text-white font-semibold" style="display: none;"></span>
+        <button id="profile-btn" class="text-gray-600 hover:text-gray-800 transition duration-300">
+          <svg class="w-6 h-6"><use href="#icon-user"></use></svg>
+        </button>
+        <button id="board-btn" class="text-gray-600 hover:text-gray-800 transition duration-300">
+          <svg class="w-6 h-6"><use href="#icon-briefcase"></use></svg>
+        </button>
+        <button id="notification-btn" class="text-gray-600 hover:text-gray-800 transition duration-300">
+          <svg class="w-6 h-6"><use href="#icon-bell"></use></svg>
+        </button>
+        <button id="logout-btn" class="text-gray-600 hover:text-gray-800 transition duration-300">
+          <svg class="w-6 h-6"><use href="#icon-logout"></use></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
 
-    <main class="container mt-8">
-      <div class="grid grid-cols-1 md:grid-cols-3">
-        <section class="md:col-span-2">
-          <h2 class="text-xl font-semibold mb-4">최근 게시글</h2>
-          <div id="posts-list" class="space-y-4">
-          </div>
-          <button id="new-post-button" class="button w-full mt-4">➕ 새 게시글 작성</button>
-        </section>
-        <section>
-          <h2 class="text-xl font-semibold mb-4">실시간 채팅</h2>
-          <div class="card">
-            <div id="chat-user-list" class="space-y-4 p-4"></div>
-            <div class="flex items-center p-4">
-              <input type="text" class="input mr-2" placeholder="메시지 입력...">
-              <button class="button">전송</button>
-            </div>
-          </div>
-        </section>
-      </div>
-      <ul id="user-list" class="mt-4"></ul>
-    </main>
-  </div>
+  <!-- Main Content -->
+  <main class="container mx-auto mt-8 px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Posts Section -->
+      <section class="lg:col-span-2">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-semibold text-gray-800">최근 게시글</h2>
+          <button id="new-post-button" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 flex items-center">
+            <svg class="w-5 h-5 mr-2"><use href="#icon-plus-circle"></use></svg>
+            새 게시글
+          </button>
+        </div>
+        <div id="posts-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- 게시글이 여기에 동적으로 추가됩니다 -->
+        </div>
+      </section>
 
+      <!-- Chat Section -->
+      <section>
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800">실시간 채팅</h2>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div id="chat-user-list" class="space-y-4 p-4">
+            <!-- 채팅 유저가 여기에 동적으로 추가됩니다 -->
+          </div>
+          <div class="flex items-center p-4">
+            <input type="text" class="border border-gray-300 rounded-lg w-full py-2 px-4" placeholder="메시지 입력...">
+            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ml-2">전송</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
   <script src="home.js"></script>
-</html>
   <script>
-    // 사용자 정보를 클릭하면 profile.html로 이동
-    document.getElementById('user-info').addEventListener('click', function() {
-      window.location.href = 'profile.html';  // 프로필 페이지로 이동
-    });
-  </script>
-  <script src="board.js"></script>
-  <script>
+    // 기존의 JavaScript 기능 유지
     document.addEventListener("DOMContentLoaded", () => {
       const postsList = document.getElementById("posts-list");
+      const chatUserList = document.getElementById('chat-user-list');
 
       // 게시글 데이터를 로드하는 함수
       function loadPosts() {
         fetch('/get-posts')
           .then(response => response.json())
           .then(posts => {
-            displayPosts(posts);
+            postsList.innerHTML = '';
+            posts.forEach(post => {
+              const postItem = document.createElement("div");
+              postItem.className = "bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg";
+              postItem.innerHTML = `
+                <img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover">
+                <div class="p-4">
+                  <h3 class="font-semibold text-lg text-gray-800 mb-2">${post.title}</h3>
+                  <p class="font-bold text-blue-600 mb-2">${post.price}원</p>
+                  <p class="text-gray-600 mb-4">판매자: ${post.author}</p>
+                  <div class="flex justify-between">
+                    <button class="bg-white text-blue-600 border border-blue-600 font-semibold py-2 px-4 rounded-full hover:bg-blue-600 hover:text-white transition duration-300 flex items-center">
+                      <svg class="w-4 h-4 mr-2"><use href="#icon-message-circle"></use></svg>
+                      채팅하기
+                    </button>
+                    <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300">자세히 보기</button>
+                  </div>
+                </div>
+              `;
+              postsList.appendChild(postItem);
+            });
           })
           .catch(error => console.error("게시글 로드 오류:", error));
       }
+      function loadChatList() {
+  fetch('/get-chats')
+    .then(response => response.json())
+    .then(chats => {
+      chatUserList.innerHTML = '';
+      chats.forEach(chat => {
+        const chatItem = document.createElement("div");
+        chatItem.className = "flex items-center space-x-4 p-4 hover:bg-gray-50 transition duration-300 cursor-pointer";
+        chatItem.innerHTML = `
+          <div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
+            ${chat.user.charAt(0).toUpperCase()}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 truncate">${chat.user}</p>
+            <p class="text-sm text-gray-500 truncate">${chat.lastMessage}</p>
 
-      // 게시글을 화면에 표시하는 함수
-      function displayPosts(posts) {
-        postsList.innerHTML = '';
-        posts.forEach(post => {
-          const postItem = document.createElement("div");
-          postItem.className = "card";
-          postItem.innerHTML = `
-            <h3 class="font-semibold text-lg">${post.title}</h3>
-            <p class="font-bold">${post.price}원</p>
-            <p class="text-gray-500">판매자: ${post.author}</p>
-            <div class="flex justify-between mt-4">
-            <button class="button-outline chat-button" data-author="${post.author_id}">💬 채팅하기</button>
-              <button class="button">자세히 보기</button>
             </div>
-          `;
-          postsList.appendChild(postItem);
-        });
-     
-    
-      }
+        `;
+        chatUserList.appendChild(chatItem);
+      });
+    })
+    .catch(error => console.error("채팅 목록 로드 오류:", error));
+}
 
-      // 초기 로드 시 게시글을 가져옵니다.
+
+      // 초기 데이터 로드
       loadPosts();
+      loadChatList();
+
     });
+
+    
   </script>
+
+  <!-- SVG Icons -->
+  <svg style="display: none;">
+    <!-- 사용자 아이콘 -->
+    <symbol id="icon-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="3" fill="#6C63FF"></circle>
+      <path d="M6 20v-1a6 6 0 0112 0v1" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    </symbol>
   
+    <!-- 서류 가방 아이콘 -->
+    <symbol id="icon-briefcase" viewBox="0 0 24 24">
+      <rect x="2" y="7" width="20" height="14" rx="2" fill="#FFA726"></rect>
+      <path d="M16 3v4M8 3v4" stroke="#FB8C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </symbol>
+  
+    <!-- 알림 아이콘 -->
+    <symbol id="icon-bell" viewBox="0 0 24 24">
+      <path d="M8 10v2M16 10v2" stroke="#FF5252" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+      <path d="M12 20a2 2 0 002-2H10a2 2 0 002 2z" fill="#FF5252"></path>
+    </symbol>
+  
+    <!-- 로그아웃 아이콘 -->
+    <symbol id="icon-logout" viewBox="0 0 24 24">
+      <path d="M10 2L14 6M14 6L10 10M14 6H3" stroke="#1E88E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M17 12h4v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7h4" fill="#BBDEFB"></path>
+    </symbol>
+  
+    <!-- 메시지 아이콘 
+    <symbol id="icon-message-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#4CAF50"></circle>
+      <path d="M8 11h8M8 15h4" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </symbol>-->
+  
+    <!-- 더하기 아이콘 -->
+    <symbol id="icon-plus-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#009688"></circle>
+      <path d="M12 8v8M8 12h8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </symbol>
+  </svg>
   
 </body>
 </html>
