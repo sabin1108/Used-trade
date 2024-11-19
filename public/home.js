@@ -66,7 +66,7 @@ window.onload = function() {
 
           // 사용자 이름 클릭 시 채팅 페이지로 이동
           nameDiv.addEventListener('click', function() {
-            window.location.href = `chat.html?username=${user.username}`;
+            window.location.href = `message.html?username=${user.username}`;
           });
 
           userDiv.appendChild(avatarDiv);
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const authorUsername = event.target.getAttribute("data-author-username");
 
           // 채팅 페이지로 이동, 작성자 username을 쿼리 매개변수로 전달
-          window.location.href = `chat.html?username=${encodeURIComponent(username)}`;
+          window.location.href = `message.html?username=${encodeURIComponent(username)}`;
         });
       });
     })
@@ -116,5 +116,5 @@ document.addEventListener('DOMContentLoaded', () => {
 // 채팅 시작 함수
 function startChat(username) {
   // 1대1 채팅 인터페이스로 이동, username을 쿼리 파라미터로 전달
-  window.location.href = `chat.html?username=${encodeURIComponent(username)}`;
+  window.location.href = `message.html?username=${encodeURIComponent(username)}`;
 }
