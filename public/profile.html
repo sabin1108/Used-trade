@@ -3,31 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>개인 정보 확인</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>BookHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <header>
-    <h1>중고 책 거래</h1>
-    <nav>
-      <button onclick="location.href='home.html'">홈</button>
-      <button onclick="location.href='transactions.html'">거래내역</button>
-    </nav>
-    <div id="user-info">
-      <span id="username"></span>님 (<span id="student_num"></span>)
-      <button id="logout-btn">로그아웃</button>
+<body class="min-h-screen bg-gray-100">
+  <!-- Header -->
+  <header class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-gray-800">BookHub</h1>
+      <nav class="flex items-center space-x-4">
+        <span id="user-id" class="text-white font-semibold" style="display: none;"></span>
+        <button id="profile-btn" class="text-gray-600 hover:text-gray-800 transition duration-300">
+          <svg class="w-6 h-6"><use href="#icon-user"></use></svg>
+        </button>
+        <button id="board-btn" class="text-gray-600 hover:text-gray-800 transition duration-300">
+          <svg class="w-6 h-6"><use href="#icon-briefcase"></use></svg>
+        </button>
+        <button id="notification-btn" class="text-gray-600 hover:text-gray-800 transition duration-300">
+          <svg class="w-6 h-6"><use href="#icon-bell"></use></svg>
+        </button>
+        <button id="logout-btn" class="text-gray-600 hover:text-gray-800 transition duration-300">
+          <svg class="w-6 h-6"><use href="#icon-logout"></use></svg>
+        </button>
+      </nav>
     </div>
   </header>
-  <main>
-    <h2>개인 정보 확인</h2>
-    <p><strong>이름:</strong> <span id="username"></span></p>
-    <p><strong>아이디:</strong> <span id="user_id"></span></p>
-    <p><strong>학번:</strong> <span id="student_num"></span></p>
-    <p><strong>이메일:</strong> <span id="email"></span></p>
-    <p><strong>가입일:</strong> <span id="created_at"></span></p>
-    
-    <button onclick="location.href='edit-profile.html'">정보 수정</button>
+
+  <!-- Main Content -->
+  <main class="container mx-auto mt-8 px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Profile Section -->
+      <section class="lg:col-span-2">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-semibold text-gray-800">개인 정보 확인</h2>
+        </div>
+        <div id="profile-list" class="grid grid-cols-1 md:grid-cols-1 gap-6">
+          <!-- 개인 정보 표시가 여기 표시됩니다 -->
+          <div class="bg-white shadow-md rounded-lg">
+            <div class="p-4">
+              <ul class="space-y-2">
+                <li class="flex justify-between items-center">
+                  <span>이름</span>
+                  <span class="text-green-600 font-semibold" id="username"></span>
+                </li>
+                <li class="flex justify-between items-center">
+                  <span>아이디</span>
+                  <span class="text-green-600 font-semibold" id="user_id"></span>
+                </li>
+                <li class="flex justify-between items-center">
+                  <span>학번</span>
+                  <span class="text-green-600 font-semibold" id="student_num"></span>
+                </li>
+                <li class="flex justify-between items-center">
+                  <span>이메일</span>
+                  <span class="text-green-600 font-semibold" id="email"></span>
+                </li>
+                <li class="flex justify-between items-center">
+                  <span>가입일</span>
+                  <span class="text-green-600 font-semibold" id="created_at"></span>
+                </li>
+              </ul>
+              <button onclick="location.href='edit-profile.html'" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded w-full">정보 수정</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chat Section -->
+      <section>
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800">실시간 채팅</h2>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div id="chat-user-list" class="space-y-4 p-4">
+            <!-- 채팅 유저가 여기에 동적으로 추가됩니다 -->
+          </div>
+          <div class="flex items-center p-4">
+            <input type="text" class="border border-gray-300 rounded-lg w-full py-2 px-4" placeholder="메시지 입력...">
+            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 ml-2">전송</button>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
   <script src="./profile.js"></script>
+  <!-- SVG Icons -->
+  <svg style="display: none;">
+    <!-- 사용자 아이콘 -->
+    <symbol id="icon-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="3" fill="#6C63FF"></circle>
+      <path d="M6 20v-1a6 6 0 0112 0v1" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    </symbol>
+  
+    <!-- 서류 가방 아이콘 -->
+    <symbol id="icon-briefcase" viewBox="0 0 24 24">
+      <rect x="2" y="7" width="20" height="14" rx="2" fill="#FFA726"></rect>
+      <path d="M16 3v4M8 3v4" stroke="#FB8C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </symbol>
+  
+    <!-- 알림 아이콘 -->
+    <symbol id="icon-bell" viewBox="0 0 24 24">
+      <path d="M8 10v2M16 10v2" stroke="#FF5252" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+      <path d="M12 20a2 2 0 002-2H10a2 2 0 002 2z" fill="#FF5252"></path>
+    </symbol>
+  
+    <!-- 로그아웃 아이콘 -->
+    <symbol id="icon-logout" viewBox="0 0 24 24">
+      <path d="M10 2L14 6M14 6L10 10M14 6H3" stroke="#1E88E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M17 12h4v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7h4" fill="#BBDEFB"></path>
+    </symbol>
+  
+    <!-- 메시지 아이콘  -->
+    <symbol id="icon-message-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#4CAF50"></circle>
+      <path d="M8 11h8M8 15h4" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </symbol>
+  
+    <!-- 더하기 아이콘 -->
+    <symbol id="icon-plus-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#009688"></circle>
+      <path d="M12 8v8M8 12h8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </symbol>
+  </svg>
 </body>
 </html>
