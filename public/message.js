@@ -1,5 +1,5 @@
 // 소켓 연결
-const socket = io('http://localhost:3000');
+const socket = io('http://ec2-3-39-46-144.ap-northeast-2.compute.amazonaws.com:3000/');
 
 // 사용자 이름 입력 및 등록
 const username = prompt('사용자 이름을 입력하세요:'); // 예시: 사용자 이름 입력
