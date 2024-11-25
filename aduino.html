@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servo Control</title>
+</head>
+<body>
+    <h1>Servo Motor Control</h1>
+    <button id="rotateButton">Rotate Servo</button>
+    <p id="status"></p>
+
+    <script>
+        const button = document.getElementById('rotateButton');
+        const status = document.getElementById('status');
+
+        button.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/rotate-servo', { method: 'POST' });
+                const data = await response.json();
+                if (data.success) {
+                    status.textContent = `Servo rotated to ${data.angle} degrees.`;
+                } else {
+                    status.textContent = 'Failed to rotate servo.';
+                }
+            } catch (error) {
+                status.textContent = 'Error communicating with server.';
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
