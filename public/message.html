@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="styless.css">
   <style>
     body {
-      background-color: #2d3748; /* 어두운 배경 색 (gray-800) */
-      color: white;
+      background-color: #f7fafc; /* 밝은 배경 색 (gray-100) */
+      color: #2d3748; /* 어두운 텍스트 색 (gray-800) */
       font-family: Arial, sans-serif;
       margin: 0;
       display: flex;
@@ -22,16 +22,16 @@
     #chat-header {
       font-size: 32px;
       font-weight: bold;
-      color: #81e6d9; /* 밝은 teal 색 */
+      color: #2b6cb0; /* 파란색 (blue-600) */
       margin-bottom: 20px;
     }
 
     #chat-window {
       width: 100%;
       max-width: 600px;
-      background-color: #1a202c; /* 어두운 채팅창 배경 */
+      background-color: #edf2f7; /* 밝은 채팅창 배경 (gray-200) */
       border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       padding: 20px;
       margin-bottom: 20px;
       max-height: 400px;
@@ -39,7 +39,7 @@
     }
 
     #feedback {
-      color: #e2e8f0; /* 밝은 텍스트 색 */
+      color: #718096; /* 중간 텍스트 색 (gray-500) */
       font-size: 14px;
       margin-bottom: 10px;
     }
@@ -53,17 +53,17 @@
     #message-input {
       width: 90%;
       padding: 10px;
-      border: 1px solid #4a5568; /* 어두운 테두리 색 */
+      border: 1px solid #cbd5e0; /* 밝은 테두리 색 (gray-300) */
       border-radius: 4px;
-      background-color: #2d3748; /* 어두운 배경 색 */
-      color: white;
+      background-color: #ffffff; /* 흰색 배경 */
+      color: #2d3748; /* 어두운 텍스트 색 */
       font-size: 16px;
     }
 
     #chat-form button {
       width: 10%;
       padding: 10px;
-      background-color: #4fd1c5; /* 밝은 teal 색 */
+      background-color: #2b6cb0; /* 파란색 버튼 */
       color: white;
       border: none;
       border-radius: 4px;
@@ -72,7 +72,7 @@
     }
 
     #chat-form button:hover {
-      background-color: #38b2ac; /* 버튼 hover 색상 */
+      background-color: #2c5282; /* 버튼 hover 색상 */
     }
 
     /* 메시지 스타일 */
@@ -80,19 +80,19 @@
       padding: 8px;
       margin-bottom: 12px;
       border-radius: 4px;
-      background-color: #4a5568; /* 메시지 배경 색 */
+      background-color: #e2e8f0; /* 메시지 배경 색 (gray-300) */
       max-width: 80%;
     }
 
     .message.user {
-      background-color: #4fd1c5; /* 사용자 메시지 배경 색 */
-      color: black;
+      background-color: #bee3f8; /* 사용자 메시지 배경 색 (blue-200) */
+      color: #2d3748; /* 어두운 텍스트 색 */
       align-self: flex-end;
     }
 
     .message.bot {
-      background-color: #2b6cb0; /* 봇 메시지 배경 색 */
-      color: white;
+      background-color: #90cdf4; /* 봇 메시지 배경 색 (blue-300) */
+      color: #2d3748; /* 어두운 텍스트 색 */
       align-self: flex-start;
     }
   </style>
