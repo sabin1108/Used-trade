@@ -47,6 +47,47 @@ db.connect((err) => {
 });
 app.set('db', db);
 
+
+//aduino
+const ARDUINO_IP = '192.168.123.120'; // Arduino의 IP 주소
+const ARDUINO_PORT = 80; // Arduino 서버 포트
+let currentAngle = 0; // 현재 각도
+app.use(express.json());
+
+// 서보 모터 회전 라우트
+app.post('/api/rotate-servo', async (req, res) => {
+  try {
+      // 각도 증가
+      currentAngle = (currentAngle + 90) % 180;
+
+      const jsonData = JSON.stringify({ angle: currentAngle });
+
+      // Arduino로 요청 전송
+      const arduinoResponse = await axios.post(`http://${ARDUINO_IP}:${ARDUINO_PORT}/rotate`, jsonData, {
+          headers: {
+              'Content-Type': 'application/json',
+              'Content-Length': Buffer.byteLength(jsonData)
+          },
+          timeout: 10000 // 10초로 타임아웃 증가
+      });
+
+      // Arduino 응답 확인
+      console.log('Arduino response:', arduinoResponse.data);
+
+      if (arduinoResponse.status === 200) {
+          res.json({ success: true, angle: currentAngle });
+      } else {
+          res.status(500).json({ success: false, error: 'Failed to control servo.' });
+      }
+  } catch (error) {
+      console.error('Error controlling servo:', error.message);
+      res.status(500).json({ success: false, error: error.message });
+  }
+});
+//aduino -----------------------------------------------------------
+
+
+
 //소켓
 
 // 채팅 메시지 처리
