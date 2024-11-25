@@ -12,6 +12,15 @@ document.getElementById('logout-btn').addEventListener('click', function() {
 });
 //상당 아이콘 이동
 document.addEventListener("DOMContentLoaded", () => {
+  const lockButton = document.getElementById("lock-btn");
+
+  // 자물쇠 버튼 클릭 이벤트
+  lockButton.addEventListener("click", () => {
+    window.location.href = "arduino.html";
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("profile-btn").addEventListener("click", () => {
     window.location.href = "profile.html"; // Profile 페이지로 이동
   });
