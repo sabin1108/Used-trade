@@ -1,14 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servo Control</title>
+    <title>원격 잠금 해제 장치</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Servo Motor Control</h1>
-    <button id="rotateButton">Rotate Servo</button>
-    <p id="status"></p>
+<body class="min-h-screen flex flex-col justify-center items-center bg-gray-100">
+
+    <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">원격 잠금 해제</h1>
+        
+        <!-- 서보 모터 회전 버튼 -->
+        <button id="rotateButton" 
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 mb-4">
+            잠금 해제
+        </button>
+
+        <!-- 홈으로 이동 버튼 -->
+        <button onclick="location.href='home.html'" 
+                class="w-full bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
+            홈으로 이동
+        </button>
+
+        <!-- 상태 표시 -->
+        <p id="status" class="mt-4 text-center text-gray-600"></p>
+    </div>
 
     <script>
         const button = document.getElementById('rotateButton');
@@ -19,12 +36,15 @@
                 const response = await fetch('/api/rotate-servo', { method: 'POST' });
                 const data = await response.json();
                 if (data.success) {
-                    status.textContent = `Servo rotated to ${data.angle} degrees.`;
+                    status.textContent = `서보 모터가 ${data.angle}도로 회전했습니다.`;
+                    status.className = "mt-4 text-center text-green-600 font-semibold";
                 } else {
-                    status.textContent = 'Failed to rotate servo.';
+                    status.textContent = '서보 모터 회전에 실패했습니다.';
+                    status.className = "mt-4 text-center text-red-600 font-semibold";
                 }
             } catch (error) {
-                status.textContent = 'Error communicating with server.';
+                status.textContent = '서버와 통신하는 데 오류가 발생했습니다.';
+                status.className = "mt-4 text-center text-red-600 font-semibold";
                 console.error(error);
             }
         });
