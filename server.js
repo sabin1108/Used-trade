@@ -49,7 +49,7 @@ app.set('db', db);
 
 
 //aduino
-const ARDUINO_IP = '192.168.123.120'; // Arduino의 IP 주소
+const ARDUINO_IP = '192.168.0.32'; // Arduino의 IP 주소
 const ARDUINO_PORT = 80; // Arduino 서버 포트
 let currentAngle = 0; // 현재 각도
 app.use(express.json());
