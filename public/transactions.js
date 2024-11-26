@@ -2,8 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const salesList = document.getElementById("sales-list");
   const logoutBtn = document.getElementById("logout-btn");
   
-  let allTransactions = []; // 모든 판매내역을 저장
-
   if (!salesList || !logoutBtn) {
     console.error("필수 요소를 찾을 수 없습니다.");
     return;
@@ -92,6 +90,9 @@ function loadSales() {
 
 //상당 아이콘 이동
 document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("home-btn").addEventListener("click", () => {
+      window.location.href = "home.html"; // Home 페이지로 이동
+    });
   document.getElementById("profile-btn").addEventListener("click", () => {
     window.location.href = "profile.html"; // Profile 페이지로 이동
   });
