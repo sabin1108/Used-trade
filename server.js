@@ -502,6 +502,6 @@ app.put('/api/mark-as-sold/:postId', (req, res) => {
 
 
 // 서버 실행
-server.listen(PORT, () => {
+server.listen(PORT,'0.0.0.0', () => {
   console.log(`서버가 ${PORT} 포트에서 실행 중입니다.`);
 });
