@@ -54,31 +54,15 @@ const ARDUINO_IP = '192.168.0.32'; // Arduino IP 주소
 const ARDUINO_PORT = 80;          // Arduino 포트
 let currentAngle = 0; // 서보 모터 각도
 
-app.post('/api/rotate-servo', async (req, res) => {
-  try {
-    // 새로운 각도 결정
-    currentAngle = (currentAngle + 90) % 180;
+app.post("/api/increase-angle", (req, res) => {
+  currentAngle = (currentAngle + 90) % 180; // 각도 0~180도 내에서 90도 증가
+  console.log(`Angle increased: ${currentAngle}`);
+  res.json({ angle: currentAngle }); // 새 각도를 반환
+});
 
-    // Arduino로 전송할 데이터
-    const jsonData = { angle: currentAngle };
-
-    // Arduino에 요청 전송 (타임아웃을 10초로 늘림)
-    const response = await axios.post(`http://${ARDUINO_IP}:${ARDUINO_PORT}/rotate`, jsonData, {
-      headers: { 'Content-Type': 'application/json' },
-      timeout: 10000,  // 10초로 늘려서 시도
-    });
-
-    console.log('Arduino 응답:', response.data);
-
-    if (response.status === 200) {
-      res.json({ success: true, angle: currentAngle });
-    } else {
-      res.status(500).json({ success: false, error: 'Arduino에서 오류 발생.' });
-    }
-  } catch (error) {
-    console.error('Arduino 제어 중 오류:', error.message);
-    res.status(500).json({ success: false, error: error.message });
-  }
+// Arduino가 현재 각도를 가져가는 엔드포인트
+app.get("/api/get-angle", (req, res) => {
+  res.json({ angle: currentAngle });
 });
 
 
