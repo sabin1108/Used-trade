@@ -53,38 +53,38 @@ app.set('db', db);
 const ARDUINO_IP = '192.168.0.32'; // Arduino의 IP 주소
 const ARDUINO_PORT = 80; // Arduino 서버 포트
 let currentAngle = 0; // 현재 각도
-app.use(express.json());
 
 // 서보 모터 회전 라우트
 app.post('/api/rotate-servo', async (req, res) => {
   try {
-      // 각도 증가
-      currentAngle = (currentAngle + 90) % 180;
+    // 각도 증가 (0 → 90 → 180 반복)
+    currentAngle = (currentAngle + 90) % 180;
 
-      const jsonData = JSON.stringify({ angle: currentAngle });
+    // Arduino로 전송할 데이터 생성
+    const jsonData = { angle: currentAngle };
 
-      // Arduino로 요청 전송
-      const arduinoResponse = await axios.post(`http://${ARDUINO_IP}:${ARDUINO_PORT}/rotate`, jsonData, {
-          headers: {
-              'Content-Type': 'application/json',
-              'Content-Length': Buffer.byteLength(jsonData)
-          },
-          timeout: 10000 // 10초로 타임아웃 증가
-      });
+    // Arduino로 요청 전송
+    const response = await axios.post(`http://${ARDUINO_IP}:${ARDUINO_PORT}/rotate`, jsonData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      timeout: 30000, // 30초 타임아웃으로 변경
+    });
 
-      // Arduino 응답 확인
-      console.log('Arduino response:', arduinoResponse.data);
+    // Arduino 응답 확인
+    console.log('Arduino 응답:', response.data);
 
-      if (arduinoResponse.status === 200) {
-          res.json({ success: true, angle: currentAngle });
-      } else {
-          res.status(500).json({ success: false, error: 'Failed to control servo.' });
-      }
+    if (response.status === 200) {
+      res.json({ success: true, angle: currentAngle });
+    } else {
+      res.status(500).json({ success: false, error: 'Arduino에서 오류 발생.' });
+    }
   } catch (error) {
-      console.error('Error controlling servo:', error.message);
-      res.status(500).json({ success: false, error: error.message });
+    console.error('Arduino 제어 중 오류:', error.message);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
+
 //aduino -----------------------------------------------------------
 
 
