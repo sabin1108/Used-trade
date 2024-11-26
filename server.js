@@ -52,19 +52,30 @@ app.set('db', db);
 // Arduino 정보
 const ARDUINO_IP = '192.168.0.32'; // Arduino IP 주소
 const ARDUINO_PORT = 80;          // Arduino 포트
-// Arduino 상태 관리
-let currentAngle = 0;
-
-// 서보 모터 제어 라우트
-app.post('/api/rotate-servo', (req, res) => {
-  const { device, angle } = req.body;
-  if (device === 'servo_controller') {
-    // 각도 갱신 및 제한 확인
+app.post('/api/rotate-servo', async (req, res) => {
+  try {
+    // 새로운 각도 결정
     currentAngle = (currentAngle + 90) % 180;
-    res.json({ success: true, angle: currentAngle });
-    console.log(`Servo angle updated to: ${currentAngle}`);
-  } else {
-    res.status(400).json({ success: false, message: 'Invalid device or request format.' });
+
+    // Arduino로 전송할 데이터
+    const jsonData = { angle: currentAngle };
+
+    // Arduino에 요청 전송
+    const response = await axios.post(`http://${ARDUINO_IP}:${ARDUINO_PORT}/rotate`, jsonData, {
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 5000,
+    });
+
+    console.log('Arduino 응답:', response.data);
+
+    if (response.status === 200) {
+      res.json({ success: true, angle: currentAngle });
+    } else {
+      res.status(500).json({ success: false, error: 'Arduino에서 오류 발생.' });
+    }
+  } catch (error) {
+    console.error('Arduino 제어 중 오류:', error.message);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
