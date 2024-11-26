@@ -52,6 +52,8 @@ app.set('db', db);
 // Arduino 정보
 const ARDUINO_IP = '192.168.0.32'; // Arduino IP 주소
 const ARDUINO_PORT = 80;          // Arduino 포트
+let currentAngle = 0; // 서보 모터 각도
+
 app.post('/api/rotate-servo', async (req, res) => {
   try {
     // 새로운 각도 결정
