@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'rlawogus!',
+  password: '1111',
   database: 'used_book_db'
 });
 
