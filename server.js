@@ -55,33 +55,15 @@ const ARDUINO_PORT = 80; // Arduino 서버 포트
 let currentAngle = 0; // 현재 각도
 
 // 서보 모터 회전 라우트
-app.post('/api/rotate-servo', async (req, res) => {
-  try {
-    // 각도 증가 (0 → 90 → 180 반복)
+app.post('/api/rotate-servo', (req, res) => {
+  const { device, angle } = req.body;
+  if (device === 'servo_controller') {
+    // 각도 갱신 및 제한 확인
     currentAngle = (currentAngle + 90) % 180;
-
-    // Arduino로 전송할 데이터 생성
-    const jsonData = { angle: currentAngle };
-
-    // Arduino로 요청 전송
-    const response = await axios.post(`http://${ARDUINO_IP}:${ARDUINO_PORT}/rotate`, jsonData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      timeout: 30000, // 30초 타임아웃으로 변경
-    });
-
-    // Arduino 응답 확인
-    console.log('Arduino 응답:', response.data);
-
-    if (response.status === 200) {
-      res.json({ success: true, angle: currentAngle });
-    } else {
-      res.status(500).json({ success: false, error: 'Arduino에서 오류 발생.' });
-    }
-  } catch (error) {
-    console.error('Arduino 제어 중 오류:', error.message);
-    res.status(500).json({ success: false, error: error.message });
+    res.json({ success: true, angle: currentAngle });
+    console.log(`Servo angle updated to: ${currentAngle}`);
+  } else {
+    res.status(400).json({ success: false, message: 'Invalid device or request format.' });
   }
 });
 
