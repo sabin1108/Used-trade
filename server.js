@@ -142,7 +142,12 @@ app.post('/login', (req, res) => {
     if (results.length > 0) {
       req.session.user_id = results[0].id; // 사용자 ID 저장
       req.session.username = results[0].username; // 사용자 이름 저장
-      return res.status(200).json({ message: '로그인 성공!', success: true });
+      const data = {
+        success: true,
+        message: "로그인 성공!" + results[0].user_id + "님 환영합니다!",
+        user_id: results[0].user_id
+      };
+      return res.status(200).json(data);
     } else {
       res.status(401).json({ error: '아이디 또는 비밀번호가 잘못되었습니다.', success: false });
     }
