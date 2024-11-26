@@ -55,32 +55,27 @@ const ARDUINO_PORT = 80;          // Arduino 포트
 let currentAngle = 0;             // 서보 모터 현재 각도
 
 // 서보 모터 제어 라우트
+// 서보 제어 라우트
 app.post('/api/rotate-servo', async (req, res) => {
-  const { device } = req.body;
+  const { command } = req.body;
 
-  if (device === 'servo_controller') {
+  if (command === 1) {
+    // 새로운 각도 계산
+    currentAngle = (currentAngle + 90) % 180;
+
+    // 아두이노로 요청 전달
     try {
-      // 현재 각도를 갱신
-      currentAngle = (currentAngle + 90) % 180;
-
-      // Arduino로 요청 전송
-      const arduinoResponse = await axios.post(`http://${ARDUINO_IP}:${ARDUINO_PORT}/rotate`, {
-        angle: currentAngle, // 각도 데이터 전달
+      const response = await axios.post(`http://${ARDUINO_IP}:${ARDUINO_PORT}/rotate`, {
+        angle: currentAngle,
       });
-
-      // Arduino 응답 확인
-      if (arduinoResponse.status === 200) {
-        console.log(`Servo motor rotated to: ${currentAngle} degrees`);
-        res.json({ success: true, angle: currentAngle });
-      } else {
-        res.status(500).json({ success: false, message: 'Failed to communicate with Arduino.' });
-      }
+      console.log(`Arduino responded: ${response.data}`);
+      res.json({ success: true, angle: currentAngle });
     } catch (error) {
-      console.error('Error communicating with Arduino:', error.message);
-      res.status(500).json({ success: false, message: 'Error communicating with Arduino.' });
+      console.error("Failed to communicate with Arduino:", error.message);
+      res.status(500).json({ success: false, message: "Failed to communicate with Arduino" });
     }
   } else {
-    res.status(400).json({ success: false, message: 'Invalid device or request format.' });
+    res.status(400).json({ success: false, message: 'Invalid command' });
   }
 });
 
