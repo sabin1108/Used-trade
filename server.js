@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const { Server } = require('socket.io'); // 웹소켓용 모듈 추가
 const http = require('http');
+const axios = require('axios');
 
 const app = express();
 const server = http.createServer(app); // HTTP 서버 생성
