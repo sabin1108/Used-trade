@@ -1,190 +1,137 @@
 document.addEventListener("DOMContentLoaded", () => {
     const postsList = document.getElementById("posts-list");
-    const logoutBtn = document.getElementById("logout-btn");
     const createPostBtn = document.getElementById("create-post-btn");
     const searchBtn = document.getElementById("search-btn");
     const searchInput = document.getElementById("search-input");
-    let allPosts = []; // 모든 게시글을 저장하여 검색 필터링에 사용
 
-    if (!postsList || !logoutBtn || !createPostBtn || !searchBtn || !searchInput) {
+    if (!postsList || !createPostBtn || !searchBtn || !searchInput) {
         console.error("필수 요소를 찾을 수 없습니다.");
         return;
     }
-    createPostBtn.addEventListener("click", function() {
-        location.href = 'create-post.html'; // 게시글 작성 페이지로 이동
+
+    // 새 게시글 작성 버튼 이벤트
+    createPostBtn.addEventListener("click", () => {
+        location.href = "create-post.html";
     });
 
-    // 로그아웃 버튼 이벤트
-    logoutBtn.addEventListener("click", () => {
-        fetch('/logout', { method: 'POST' })
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = '/login.html';
-                } else {
-                    console.error("로그아웃 실패");
-                }
+    // 검색 버튼 이벤트
+    searchBtn.addEventListener("click", () => {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        if (!searchTerm) {
+            loadPosts(); // 검색어가 없으면 전체 게시글 다시 로드
+            return;
+        }
+
+        fetch(`/get-posts`)
+            .then(response => response.json())
+            .then(posts => {
+                const filteredPosts = posts.filter(post =>
+                    post.title.toLowerCase().includes(searchTerm) ||
+                    post.book_title.toLowerCase().includes(searchTerm) ||
+                    post.author.toLowerCase().includes(searchTerm) ||
+                    post.publisher.toLowerCase().includes(searchTerm)
+                );
+                displayPosts(filteredPosts);
             })
-            .catch(error => console.error("로그아웃 중 오류:", error));
+            .catch(error => console.error("검색 중 오류:", error));
     });
 
     // 게시글 로드 함수
     function loadPosts() {
-        fetch('/get-posts')
+        fetch("/get-posts")
             .then(response => response.json())
             .then(posts => {
-                console.log("게시글 데이터:", posts);
-                allPosts = posts; // 모든 게시글을 저장
-                displayPosts(allPosts); // 초기 로딩 시 전체 게시글 표시
+                displayPosts(posts);
             })
-            .catch(error => console.error("게시글 데이터 로드 오류:", error));
+            .catch(error => console.error("게시글 로드 오류:", error));
     }
 
-    
     // 게시글을 화면에 표시하는 함수
     function displayPosts(posts) {
-        postsList.innerHTML = '';
+        const postsList = document.getElementById("posts-list");
+        postsList.innerHTML = ""; // 기존 게시글 초기화
     
-        posts.forEach(post => { // `post` 변수가 forEach 문 안에서 정의됨
-            const postItem = document.createElement('li');
-            postItem.setAttribute("data-post-id", post.id); // 게시글 ID 속성 추가
+        posts.forEach(post => {
+            const postItem = document.createElement("div");
+            postItem.className = "bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300";
     
             const titlePrefix = post.is_sold ? "[판매완료] " : "";
+    
             postItem.innerHTML = `
-                <h3>${titlePrefix}${post.title}</h3>
-                <p>책 제목: ${post.book_title}</p>
-                <p>저자: ${post.author}</p>
-                <p>출판사: ${post.publisher}</p>
-                <p>강의명: ${post.course_name}</p>
-                <p>가격: ${post.price}원</p>
-                <p>${post.content}</p>
-                <p>작성자: ${post.author} | 작성 시간: ${new Date(post.created_at).toLocaleString()}</p>
-                ${post.isAuthor ? `
-                <button onclick="deletePost(${post.id})">삭제</button>
-                <button onclick="editPost(${post.id})">수정</button>
-                <button onclick="markAsSold(${post.id})" ${post.is_sold ? 'disabled' : ''}>판매완료</button>
-                ` : `
-                <button onclick="startChat('${post.author}')">1대1 채팅</button>
-                `}
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">${titlePrefix}${post.title}</h3>
+                <p class="text-sm text-gray-600 mb-2"><strong>책 제목:</strong> ${post.book_title}</p>
+                <p class="text-sm text-gray-600 mb-2"><strong>저자:</strong> ${post.author}</p>
+                <p class="text-sm text-gray-600 mb-2"><strong>출판사:</strong> ${post.publisher}</p>
+                <p class="text-sm text-gray-600 mb-2"><strong>가격:</strong> ${post.price}원</p>
+                <p class="text-xs text-gray-500 mb-4">작성자: ${post.author_name} | 작성 시간: ${new Date(post.created_at).toLocaleString()}</p>
+                <div class="flex space-x-2">
+                    ${post.isAuthor ? `
+                        <button class="delete-btn bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition duration-300" data-id="${post.id}">삭제</button>
+                        <button class="edit-btn bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600 transition duration-300" data-id="${post.id}">수정</button>
+                        <button class="mark-as-sold-btn bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition duration-300" data-id="${post.id}" ${post.is_sold ? "disabled" : ""}>판매완료</button>
+                    ` : ""}
+                </div>
             `;
             postsList.appendChild(postItem);
         });
+        attachEventListeners();
+
+        function attachEventListeners() {
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", event => {
+                    const postId = event.target.getAttribute("data-id");
+                    deletePost(postId);
+                });
+            });
+        
+            document.querySelectorAll(".edit-btn").forEach(button => {
+                button.addEventListener("click", event => {
+                    const postId = event.target.getAttribute("data-id");
+                    location.href = `edit-post.html?postId=${postId}`;
+                });
+            });
+        
+            document.querySelectorAll(".mark-as-sold-btn").forEach(button => {
+                button.addEventListener("click", event => {
+                    const postId = event.target.getAttribute("data-id");
+                    markAsSold(postId);
+                });
+            });
+        }
     }
-    
-
-
-    
 
     // 게시글 삭제 함수
-    window.deletePost = function(postId) {
-        if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-            fetch(`/api/delete-post/${postId}`, {
-                method: 'DELETE',
-            })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        alert('게시글이 삭제되었습니다.');
-                        loadPosts();
-                    } else {
-                        alert(result.error);
-                    }
-                })
-                .catch(error => console.error('게시글 삭제 오류:', error));
-        }
-    };
+    function deletePost(postId) {
+        if (!confirm("정말로 삭제하시겠습니까?")) return;
 
-    // 게시글 수정 함수
-    window.editPost = function(postId) {
-        location.href = `edit-post.html?postId=${postId}`;
-    };
-
-    // 게시글 판매완료 상태 업데이트 함수
-    // 게시글 판매완료 상태 업데이트 함수
-    window.markAsSold = function(postId) {
-        if (confirm('이 게시글을 판매 완료로 표시하시겠습니까?')) {
-            fetch(`/api/mark-as-sold/${postId}`, {
-                method: 'PUT',
-            })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        alert('게시글이 판매 완료로 업데이트되었습니다.');
-                        
-                        // 판매 완료 상태를 즉시 반영
-                        const postItem = document.querySelector(`li[data-post-id="${postId}"]`);
-                        if (postItem) {
-                            const titleElement = postItem.querySelector("h3");
-                            if (titleElement && !titleElement.textContent.startsWith("[판매완료]")) {
-                                titleElement.textContent = "[판매완료] " + titleElement.textContent;
-                            }
-                            // 판매완료 버튼 비활성화
-                            const markAsSoldButton = postItem.querySelector("button[onclick^='markAsSold']");
-                            if (markAsSoldButton) {
-                                markAsSoldButton.disabled = true;
-                            }
-                        }
-                    } else {
-                        alert(result.error);
-                    }
-                })
-                .catch(error => console.error('판매 완료 업데이트 오류:', error));
-        }
-    };
-
-
-    // 게시글 검색 기능
-    function searchPosts() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const filteredPosts = allPosts.filter(post =>
-            post.title.toLowerCase().includes(searchTerm) || 
-            post.book_title.toLowerCase().includes(searchTerm) ||
-            post.author.toLowerCase().includes(searchTerm) ||
-            post.publisher.toLowerCase().includes(searchTerm) ||
-            post.course_name.toLowerCase().includes(searchTerm) ||
-            post.content.toLowerCase().includes(searchTerm)
-        );
-        displayPosts(filteredPosts);
-    }
-    // 사용자 정보를 서버에서 가져와 표시
-    function loadUserInfo() {
-        fetch('/api/profile')
+        fetch(`/api/delete-post/${postId}`, { method: "DELETE" })
             .then(response => response.json())
-            .then(data => {
-                if (data && data.username) {
-                    document.getElementById('username').innerText = data.username;
-                    document.getElementById('student_num').innerText = data.student_num;
-                    document.getElementById('user-info').style.display = 'block'; // 사용자 정보 표시
+            .then(result => {
+                if (result.success) {
+                    alert("게시글이 삭제되었습니다.");
+                    loadPosts();
+                } else {
+                    alert(result.error || "게시글 삭제 실패");
                 }
             })
-            .catch(error => console.error('사용자 정보를 불러오는 중 오류 발생:', error));
+            .catch(error => console.error("게시글 삭제 오류:", error));
     }
-    function loadUserInfo() {
-        fetch('/api/profile')
+
+    // 게시글 판매완료 함수
+    function markAsSold(postId) {
+        fetch(`/api/mark-as-sold/${postId}`, { method: "PUT" })
             .then(response => response.json())
-            .then(data => {
-                if (data && data.username) {
-                    document.getElementById('username').innerText = data.username;
-                    document.getElementById('student_num').innerText = data.student_num;
-                    document.getElementById('user-info').style.display = 'block'; // 사용자 정보 표시
+            .then(result => {
+                if (result.success) {
+                    alert("게시글이 판매 완료되었습니다.");
+                    loadPosts();
+                } else {
+                    alert(result.error || "판매완료 실패");
                 }
             })
-            .catch(error => console.error('사용자 정보를 불러오는 중 오류 발생:', error));
+            .catch(error => console.error("판매 완료 오류:", error));
     }
-    
-
-    // 검색 버튼 클릭 이벤트
-    searchBtn.addEventListener("click", searchPosts);
-
-    // 엔터 키로 검색 실행
-    searchInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            searchPosts();
-        }
-    });
 
     // 초기 로드
     loadPosts();
-    loadUserInfo();
 });
-console.log("is_sold 상태 확인:", post.is_sold);
