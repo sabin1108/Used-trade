@@ -1,13 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const homeBtn = document.getElementById("home-btn");
     const postsList = document.getElementById("posts-list");
     const createPostBtn = document.getElementById("create-post-btn");
     const searchBtn = document.getElementById("search-btn");
     const searchInput = document.getElementById("search-input");
 
-    if (!postsList || !createPostBtn || !searchBtn || !searchInput) {
+    if (!homeBtn || !postsList || !createPostBtn || !searchBtn || !searchInput) {
         console.error("필수 요소를 찾을 수 없습니다.");
         return;
     }
+
+    // 홈으로 이동 버튼 이벤트
+    homeBtn.addEventListener("click", () => {
+        location.href = "home.html";
+    });
 
     // 새 게시글 작성 버튼 이벤트
     createPostBtn.addEventListener("click", () => {
