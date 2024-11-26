@@ -24,8 +24,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
   })
   .then(data => {
     if (data.success) {
-      alert(data.message); // 로그인 성공 메시지
-      window.location.href = '/home'; // 로그인 후 홈으로 리다이렉트
+      console.log(data);
     }
   })
   .catch(error => {
