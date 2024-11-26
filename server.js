@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '1111',
+  password: 'rlawogus!',
   database: 'used_book_db'
 });
 
@@ -457,7 +457,7 @@ app.get('/get-posts', (req, res) => {
   const query = `
     SELECT boards.id, boards.title, boards.book_title, boards.author, boards.publisher, 
            boards.course_name, boards.price, boards.content, boards.created_at, 
-           boards.is_sold, users.username AS author,
+           boards.is_sold, users.username AS author_name,
            CASE WHEN boards.user_id = ? THEN true ELSE false END AS isAuthor
     FROM boards
     JOIN users ON boards.user_id = users.id
