@@ -30,10 +30,14 @@
     <script>
         const button = document.getElementById('rotateButton');
         const status = document.getElementById('status');
-
+    
         button.addEventListener('click', async () => {
             try {
-                const response = await fetch('/api/rotate-servo', { method: 'POST' });
+                const response = await fetch('/api/rotate-servo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ device: 'servo_controller', angle: 90 }) // 요청 데이터
+                });
                 const data = await response.json();
                 if (data.success) {
                     status.textContent = `서보 모터가 ${data.angle}도로 회전했습니다.`;
@@ -49,5 +53,6 @@
             }
         });
     </script>
+    
 </body>
 </html>
