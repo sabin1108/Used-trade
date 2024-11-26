@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("home-btn").addEventListener("click", () => {
+    window.location.href = "home.html"; // Home 페이지로 이동
+  });
   document.getElementById("profile-btn").addEventListener("click", () => {
     window.location.href = "profile.html"; // Profile 페이지로 이동
   });
