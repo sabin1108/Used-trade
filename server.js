@@ -62,10 +62,10 @@ app.post('/api/rotate-servo', async (req, res) => {
     // Arduino로 전송할 데이터
     const jsonData = { angle: currentAngle };
 
-    // Arduino에 요청 전송
+    // Arduino에 요청 전송 (타임아웃을 10초로 늘림)
     const response = await axios.post(`http://${ARDUINO_IP}:${ARDUINO_PORT}/rotate`, jsonData, {
       headers: { 'Content-Type': 'application/json' },
-      timeout: 5000,
+      timeout: 10000,  // 10초로 늘려서 시도
     });
 
     console.log('Arduino 응답:', response.data);
@@ -80,7 +80,6 @@ app.post('/api/rotate-servo', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
 
 
 //aduino -----------------------------------------------------------
