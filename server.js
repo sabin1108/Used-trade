@@ -145,7 +145,7 @@ app.post('/login', (req, res) => {
       const data = {
         success: true,
         message: "로그인 성공!" + results[0].user_id + "님 환영합니다!",
-        user_id: results[0].user_id
+        user_id: results[0].id
       };
       return res.status(200).json(data);
     } else {
