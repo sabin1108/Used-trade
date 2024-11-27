@@ -92,35 +92,6 @@ document.addEventListener("DOMContentLoaded", function() {
       alert('정보 업데이트 중 오류가 발생했습니다.');
     });
   });
-  
-
-  //상당 아이콘 이동
-  document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("home-btn").addEventListener("click", () => {
-      window.location.href = "home.html"; // Home 페이지로 이동
-    });
-    document.getElementById("profile-btn").addEventListener("click", () => {
-      window.location.href = "profile.html"; // Profile 페이지로 이동
-    });
-    document.getElementById("board-btn").addEventListener("click", () => {
-      window.location.href = "board.html"; // Board 페이지로 이동
-    });
-    document.getElementById("notification-btn").addEventListener("click", () => {
-      window.location.href = "transactions.html"; // Transactions 페이지로 이동
-    });
-    document.getElementById("logout-btn").addEventListener("click", () => {
-      // 로그아웃 처리 로직
-      fetch('/logout', { method: 'POST' })
-        .then(response => {
-          if (response.ok) {
-            window.location.href = "login.html"; // 로그아웃 후 로그인 페이지로 이동
-          } else {
-            console.error("로그아웃 실패");
-          }
-        })
-        .catch(error => console.error("로그아웃 오류:", error));
-    });
-  });
 
   // 새 게시글 작성 버튼 클릭 시 board.html로 이동
   document.addEventListener("DOMContentLoaded", function() {
