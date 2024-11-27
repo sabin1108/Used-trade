@@ -16,7 +16,10 @@ const PORT = 3000; // 서버 포트 설정
 app.use(session({
   secret: 'secret',  // 임의의 비밀 키
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    secure: false
+  },
 }));
 
 // 초기 페이지 설정
