@@ -153,6 +153,7 @@ app.post('/login', (req, res) => {
         user_id: results[0].id
       };
       return res.status(200).json(data);
+      });
     } else {
       res.status(401).json({ error: '아이디 또는 비밀번호가 잘못되었습니다.', success: false });
     }
