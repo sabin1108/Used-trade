@@ -10,22 +10,17 @@ document.getElementById('logout-btn').addEventListener('click', function() {
   })
   .catch(error => console.error('로그아웃 중 오류:', error));
 });
+
 //상당 아이콘 이동
-document.addEventListener("DOMContentLoaded", () => {
-  const lockButton = document.getElementById("lock-btn");
-
-  // 자물쇠 버튼 클릭 이벤트
-  lockButton.addEventListener("click", () => {
-    window.location.href = "arduino.html";
-  });
-});
-
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("home-btn").addEventListener("click", () => {
     window.location.href = "home.html"; // Home 페이지로 이동
   });
   document.getElementById("profile-btn").addEventListener("click", () => {
-    window.location.href = "profile.html"; // Profile 페이지로 이동
+    window.location.href = "profile.html"; // Profile 페지로 이동
+  });
+  document.getElementById("lock-btn").addEventListener("click", () => {
+    window.location.href = "arduino.html"; // Arduino 페이지로 이동
   });
   document.getElementById("board-btn").addEventListener("click", () => {
     window.location.href = "board.html"; // Board 페이지로 이동
