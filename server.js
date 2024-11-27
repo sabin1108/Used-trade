@@ -142,6 +142,11 @@ app.post('/login', (req, res) => {
     if (results.length > 0) {
       req.session.user_id = results[0].id; // 사용자 ID 저장
       req.session.username = results[0].username; // 사용자 이름 저장
+      req.session.save((err) => {
+        if (err) {
+          console.error('세션 저장 오류: ', err);
+          return res.status(500).json({ error: '세션 저장 오류가 발생했습니다.' });
+        }
       const data = {
         success: true,
         message: "로그인 성공!" + results[0].user_id + "님 환영합니다!",
