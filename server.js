@@ -150,6 +150,8 @@ app.post('/login', (req, res) => {
           console.error('세션 저장 오류: ', err);
           return res.status(500).json({ error: '세션 저장 오류가 발생했습니다.' });
         }
+        console.log('세션 저장 성공:', req.session);
+        
       const data = {
         success: true,
         message: "로그인 성공!" + results[0].user_id + "님 환영합니다!",
