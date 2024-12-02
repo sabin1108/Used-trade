@@ -58,7 +58,19 @@ document.addEventListener("DOMContentLoaded", () => {
         postsList.innerHTML = ""; // 기존 게시글 초기화
         
         posts.forEach(post => {
-            post.num = post.num || Math.floor(1000 + Math.random() * 9000);
+             // num이 없으면 4자리 랜덤 숫자를 생성
+        if (!post.num) {
+            post.num = Math.floor(1000 + Math.random() * 9000);
+            
+            // 서버로 num 업데이트 요청
+            fetch(`/update-num/${post.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ num: post.num })
+            }).catch(error => console.error("num 업데이트 오류:", error));
+        }
             const postItem = document.createElement("div");
             postItem.className = "bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300";
         
