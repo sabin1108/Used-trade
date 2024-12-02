@@ -16,13 +16,14 @@ document.addEventListener("DOMContentLoaded", function() {
         const courseName = document.getElementById("course-name").value;
         const price = document.getElementById("price").value;
         const content = document.getElementById("content").value;
+        const num = Math.floor(1000 + Math.random() * 9000); // 무작위 4자리 숫자 생성
 
         fetch("/create-post", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ title, bookTitle, author, publisher, courseName, price, content }),
+            body: JSON.stringify({ title, bookTitle, author, publisher, courseName, price, content, num }),
         })
         .then(response => response.json())
         .then(result => {
