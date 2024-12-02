@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         postsList.innerHTML = ""; // 기존 게시글 초기화
         
         posts.forEach(post => {
+            post.num = post.num || Math.floor(1000 + Math.random() * 9000);
             const postItem = document.createElement("div");
             postItem.className = "bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300";
         
