@@ -56,13 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function displayPosts(posts) {
         const postsList = document.getElementById("posts-list");
         postsList.innerHTML = ""; // 기존 게시글 초기화
-    
+        
         posts.forEach(post => {
             const postItem = document.createElement("div");
             postItem.className = "bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300";
-    
+        
             const titlePrefix = post.is_sold ? "[판매완료] " : "";
-    
+        
             postItem.innerHTML = `
                 <h3 class="text-lg font-semibold text-gray-800 mb-2">${titlePrefix}${post.title}</h3>
                 <p class="text-sm text-gray-600 mb-2"><strong>책 제목:</strong> ${post.book_title}</p>
@@ -76,11 +76,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         <button class="edit-btn bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600 transition duration-300" data-id="${post.id}">수정</button>
                         <button class="mark-as-sold-btn bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition duration-300" data-id="${post.id}" ${post.is_sold ? "disabled" : ""}>판매완료</button>
                     ` : ""}
+                    <span class="text-gray-500 text-sm">#${post.num || "N/A"}</span>
                 </div>
             `;
             postsList.appendChild(postItem);
         });
         attachEventListeners();
+    
+    
+    
+    
 
         function attachEventListeners() {
             document.querySelectorAll(".delete-btn").forEach(button => {
