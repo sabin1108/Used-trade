@@ -15,8 +15,6 @@ socket.on('connect', () => {
 // 서버 연결 실패 시 처리
 socket.on('connect_error', (err) => {
   console.error('서버 연결 실패:', err);
-  document.getElementById('feedback').textContent = '서버 연결 실패';
-  document.getElementById('feedback').style.color = 'red';
 });
 
 // 메시지 수신 처리
