@@ -75,8 +75,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         <button class="delete-btn bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition duration-300" data-id="${post.id}">삭제</button>
                         <button class="edit-btn bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600 transition duration-300" data-id="${post.id}">수정</button>
                         <button class="mark-as-sold-btn bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition duration-300" data-id="${post.id}" ${post.is_sold ? "disabled" : ""}>판매완료</button>
+                        <span class="text-gray-500 text-sm">#${post.num || "N/A"}</span>
                     ` : ""}
-                      <span class="text-gray-500 text-sm">#${post.num || "N/A"}</span>
+                      
                 </div>
             `;
             postsList.appendChild(postItem);
