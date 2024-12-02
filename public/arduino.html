@@ -22,6 +22,15 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: none; /* 초기에는 숨김 */
+    }
+
+    .auth-container {
+      text-align: center;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
@@ -47,11 +56,32 @@
     button:active {
       background-color: #3e8e41;
     }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      width: 100px;
+      text-align: center;
+    }
   </style>
   <script>
+    function verifyCode() {
+      const inputCode = document.getElementById("codeInput").value;
+      
+      // 입력값이 숫자 4자리인지 확인
+      if (/^\d{4}$/.test(inputCode)) {
+        document.querySelector(".auth-container").style.display = "none"; // 인증 화면 숨기기
+        document.querySelector(".container").style.display = "block"; // 메인 화면 표시
+      } else {
+        alert("Please enter a valid 4-digit number.");
+      }
+    }
+
     async function increaseAngle() {
       try {
-        // AWS 서버로 POST 요청 보내기
         const response = await fetch('/api/increase-angle', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' }
@@ -65,6 +95,12 @@
   </script>
 </head>
 <body>
+  <div class="auth-container">
+    <h1>Enter Access Code</h1>
+    <input type="text" id="codeInput" maxlength="4" placeholder="4-digit code">
+    <button onclick="verifyCode()">Submit</button>
+  </div>
+
   <div class="container">
     <h1>Arduino Servo Controller</h1>
     <button onclick="increaseAngle()">Increase Servo Angle</button>
