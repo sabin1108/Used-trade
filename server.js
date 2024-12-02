@@ -365,23 +365,25 @@ app.get('/users', (req, res) => {
 });
 
 // 게시글 작성 API
-app.post('/create-post', (req, res) => {
-  const { title, bookTitle, author, publisher, courseName, price, content } = req.body;
-  const userId = req.session.user_id; // 로그인한 사용자 ID
+app.post("/create-post", (req, res) => {
+  const { title, bookTitle, author, publisher, courseName, price, content, num } = req.body;
+  const userId = req.session.user_id; // 세션에서 사용자 ID 가져오기
 
   if (!userId) {
-      return res.status(401).json({ error: '로그인이 필요합니다.' });
+      return res.status(401).json({ error: "로그인이 필요합니다." });
   }
 
-  const query = `INSERT INTO boards (user_id, title, book_title, author, publisher, course_name, price, content, created_at) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
-  
-  db.query(query, [userId, title, bookTitle, author, publisher, courseName, price, content], (err, result) => {
+  const query = `
+      INSERT INTO boards (user_id, title, book_title, author, publisher, course_name, price, content, num, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+  `;
+
+  db.query(query, [userId, title, bookTitle, author, publisher, courseName, price, content, num], (err) => {
       if (err) {
-          console.error('게시글 작성 오류:', err);
-          return res.status(500).json({ error: '게시글 작성 중 오류가 발생했습니다.' });
+          console.error("게시글 작성 오류:", err);
+          return res.status(500).json({ error: "게시글 작성 중 오류가 발생했습니다." });
       }
-      res.status(201).json({ success: true, message: '게시글이 작성되었습니다.' });
+      res.status(200).json({ success: true });
   });
 });
 
@@ -454,7 +456,7 @@ app.get('/get-posts', (req, res) => {
 
   const query = `
     SELECT boards.id, boards.title, boards.book_title, boards.author, boards.publisher, 
-           boards.course_name, boards.price, boards.content, boards.created_at, 
+           boards.course_name, boards.price, boards.content, boards.num, boards.created_at, 
            boards.is_sold, users.username AS author_name,
            CASE WHEN boards.user_id = ? THEN true ELSE false END AS isAuthor
     FROM boards
